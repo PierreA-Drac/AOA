@@ -8,7 +8,7 @@
 
 /* Original. */
 
-// a[i][j] assumed between -1 and 1.
+// a[i][j] between -1 and 1.
 void baseline(unsigned n, float a[n][n], double b[n])
 {
     unsigned i, j;

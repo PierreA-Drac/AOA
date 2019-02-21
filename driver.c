@@ -11,9 +11,8 @@ extern void baseline(unsigned n, float a[n][n], double b[n]);
 
 static void init_array_2x (int n, float a[n][n]) {
     for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n; j++)
             a[i][j] = -1.0 + fmodf((float) rand() / (float) rand(), 2.0);
-        }
 }
 
 static void init_array_1x (int n, double a[n]) {
@@ -29,10 +28,8 @@ static void init_array_1x (int n, double a[n]) {
 
 int main (int argc, char *argv[]) {
     /* Check command line arguments. */
-    if (argc != 4) {
-        fprintf (stderr, "Usage: %s <size> <nb warmup repets> <nb measure repets>\n", argv[0]);
-        abort();
-    }
+    if (argc != 4)
+        return fprintf (stderr, "Usage: %s <size> <nb warmup repets> <nb measure repets>\n", argv[0]), 1;
 
     int i, m;
 
@@ -42,7 +39,7 @@ int main (int argc, char *argv[]) {
     int repm = atoi (argv[3]); /* Repetition number for measures. */
     
     /* Allocate arrays. */
-    float (*a)[size] = malloc (size * size * sizeof *a);
+    float (*a)[size] = malloc (size * size * sizeof *a[0]);
     double *b        = malloc (size        * sizeof *b);
 
     for (m = 0; m < NB_METAS; m++) {
