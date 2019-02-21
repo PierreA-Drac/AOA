@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-O2 -g -Wall -lm
 OPTFLAGS=-O3 -g -Wall
-OBJS=driver.o kernel.o rdtsc.o
+OBJS=driver.o kernel.o rdtsc.o -lm
 # Can be equal to NOOPT || OPT1 || OPT2
 OPT=NOOPT
 

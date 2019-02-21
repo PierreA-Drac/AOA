@@ -21,11 +21,6 @@ static void init_array_1x (int n, double a[n]) {
         a[i] = (double) rand() / RAND_MAX;
 }
 
-/* static void print_array (int n, float a[n][n]) { */
-    /* for (int i = 0; i < n; i++) */
-        /* for (int j = 0; j < n; j++) */
-            /* printf ("%f\n", a[i][j]); */
-/* } */
 
 int main (int argc, char *argv[]) {
     /* Check command line arguments. */
@@ -42,7 +37,7 @@ int main (int argc, char *argv[]) {
     int repm = atoi (argv[3]); /* Repetition number for measures. */
     
     /* Allocate arrays. */
-    float (*a)[size] = malloc (size * size * sizeof *a);
+    float (*a)[size] = malloc (size * size * sizeof *a[0]);
     double *b        = malloc (size        * sizeof *b);
 
     for (m = 0; m < NB_METAS; m++) {
