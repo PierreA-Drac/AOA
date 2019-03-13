@@ -1,11 +1,28 @@
+Caractéristiques de la machine :
++ Cache L1 de la machine par coeur :
+- 32 kiB L1i
+- 32 kiB L1d
++ Cache L2 de la machine par coeur :
+- 256 kiB L1id
+  
 Paramètres des mesures :
-- Taille : 
-- Nombre de répétition du warm-up : 100
-- Nombre de répétition des mesures : 30
-Nous prenons la valeur médiane des mesures issues des répétitions.
-
-Cache L1 de la machine par coeur :
-- 32 kB L1i
-- 32 kB L1d
-
-
+- Taille pour tenir dans L1 : 89 * (n^2 * 4) + (n * 8) = 32396 B < 32 kiB = 32768 B
+- Taille pour tenir dans L2 : 220 * (n^2 * 4) + (n * 8) < 256 kiB = 262144 B
+- Nombre de répétition du warm-up : 1000. Ce nombre est suffisant pour
+  avoir ensuite des mesures stables dans tout nos tests (car les caches
+  sont remplis avec nos tableaux), choisi par observation.
+- Nombre de répétition des mesures : on choisi un nombre qui nous permet
+  d'avoir à peu près 3 secondes par méta-répétition. Ce nombre vari en
+  fonction de la taille de notre tableau. Avoir quelques secondes de
+  mesures permet d'avoir une faible marge d'erreur de mesures des cycles
+  avec un RDTSC. Par exemple, pour une taille de 89, on peut choisir 1000000.
+- Nombre de méta-répétition des mesures : 31. C'est le nombre donné dans la
+  consigne, qui est suffisant pour avoir un grand nombre de mesure qui ne
+  varie que très peu (par observation).
+  
++ Nous prenons la valeur médiane des mesures issues des méta-répétitions.
++ On assigne le programme de calcul au coeur n°2 de la machine, sur son
+numéro de thread physique, dans le but de limiter les changements de
+contexte et de mémoire cache.
++ Les tests sont effectué en rescue mode, sans interface graphique, avec le
+minimum de tâches tournant en arrière plan.
