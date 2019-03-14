@@ -6,8 +6,9 @@ Caractéristiques de la machine :
 - 256 kiB L1id
   
 Paramètres des mesures :
+- Taille pour tenir dans L1 : n = 88 : (n^2 * 4) + (n * 8) = 31680 B < 32 kiB = 2^15 = 32768 B < n = 90 : (n^2 * 4) + (n * 8) = 33120 B
+  On peut observer la nette différence de performance entre un 'n = 88' et un 'n = 90'.
 - Taille pour tenir dans L1 : 89 * (n^2 * 4) + (n * 8) = 32396 B < 32 kiB = 32768 B
-- Taille pour tenir dans L2 : 220 * (n^2 * 4) + (n * 8) < 256 kiB = 262144 B
 - Nombre de répétition du warm-up : 1000. Ce nombre est suffisant pour
   avoir ensuite des mesures stables dans tout nos tests (car les caches
   sont remplis avec nos tableaux), choisi par observation.
@@ -26,3 +27,14 @@ numéro de thread physique, dans le but de limiter les changements de
 contexte et de mémoire cache.
 + Les tests sont effectué en rescue mode, sans interface graphique, avec le
 minimum de tâches tournant en arrière plan.
+
+Nous avons testé le flag -Ofast qui permet d'activer des optimisation
+mathémtiques qui ne respectent pas forcément certains standards. TODO Développer
+le gain et la dangerosité si on ne peux pas vérifier la validité des calculs.
+Options ciblées (ce qui consitue notre code) : fonctions inline, optimisations
+sur les boucles, les mathématiques, les branchements.
+Autres options testées mais sans gain ou gain néfatif par rapport à '-Ofast
+-march=native' : -faggressive-loop-optimizations, -fbranch-probabilities,
+-fdelayed-branch, -fexpensive-optimizations, -finline-functions, -floop-block,
+-floop-interchange, -floop-unroll-and-jam, -funsafe-math-optimizations.
+Avec gain : -funroll-all-loops.

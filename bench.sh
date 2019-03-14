@@ -19,12 +19,14 @@ res='./report/L1/bench.txt'
 
 # Set of benchmarks to do.
 cc=(
-    'gcc' 'gcc' 'gcc' 'gcc' 'gcc' 'gcc' 'gcc'
-    'icc' 'icc' 'icc' 'icc' 'icc' 'icc' 'icc'
+    'gcc' 'gcc' 'gcc' 'gcc' 'gcc' 'gcc' 'gcc' 'gcc'
+    'clang' 'clang' 'clang' 'clang' 'clang' 'clang' 'clang'
+    'icc' 'icc' 'icc' 'icc' 'icc' 'icc' 'icc' 'icc'
 )
 cflags=(
+    '-O0' '-O2' '-O3' '-Os' '-O3 -march=native' '-Ofast' '-Ofast -march=native' '-Ofast -march=native -funroll-all-loops'
     '-O0' '-O2' '-O3' '-Os' '-O3 -march=native' '-Ofast' '-Ofast -march=native'
-    '-O0' '-O2' '-O3' '-Os' '-O3 -xHost' '-Ofast' '-Ofast -xHost'
+    '-O0' '-O2' '-O3' '-Os' '-O3 -xHost' '-Ofast' '-Ofast -xHost' '-Ofast -xHost -funroll-loops -unroll-aggressive'
 )
 
 # Take the median number of the ifile and display it to stdout.
