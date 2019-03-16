@@ -57,7 +57,7 @@ int main (int argc, char *argv[]) {
             baseline (size, a, b);
         uint64_t t2 = rdtsc();
 
-        /* Print performance. */
+        /* Print performance (number of fused-multiply-exponential per cycle). */
         printf ("%.2f\n", (t2 - t1) / ((float) size * size * repm));
 
         /* Print output. */
