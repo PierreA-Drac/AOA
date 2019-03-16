@@ -324,19 +324,60 @@ il faut faire l'analyse de sensibilité pour les autres paramètres.
 
 
 \subsection{Pratique}
-\subsection{Cache L1}
-\subsection{Cache L2}
-\subsection{RAM}
+Lors de nos première tentatives pour trouver les paramètres nous avons remarqué
+que ce qui prenait le plus de temps dans notre noyau était le calcul de 
+l'exponentiel. Afin de pouvoir vérifier si nos paramètres sont corrects nous
+avons donc modifié le kernel.c pour que ce soit le temps de récupération des
+données qui soit le plus grand.
 
+\subsubsection{Cache L1}
+TO DO
+
+\subsubsection{Cache L2}
+Pour vérifier le calcul théorique de la taille des données j'ai utilisé 
+likwid-perftcr afin de voir si les données transitaient bien par le cache L2. 
+Après avoir compilé avec gcc uniquement j'ai exécuté l'exécutable avec likwid 
+et voici les résultats obtenus :
+\newline
+
+\begin{tabular}{|c|c|}
+  \hline
+  n & Data Volume (GByte) \\
+  \hline
+  100 & 4,24 \\
+  150 & 14,06 \\
+  220 & 37,9 \\
+  235 & 34,4 \\
+  \hline
+\end{tabular}
+
+On observe que ces résultats sont en corrélation avec les résultats théoriques
+en dessous de 156 pratiquement aucune donnée ne passe par le cache L2 et 
+quand on se rapproche de 242 une partie des données ne semble plus passer 
+dans L2 je suppose donc que ces données vont directement dans le cache L3.
+Au vu de ces informations, j'ai choisi de prendre 220 comme taille de 
+données.
+
+\newline
+Voici, ci-contre le graphic obtenu pour trouver le bon nombre de warmup. 
+On peut observer que le nombre de cycle semble se stabiliser au alentour 
+de 100 warmup. Pour plus de sécurité j'ai choisit 150 pour le nombre de 
+warmup.
+
+\begin{figure}
+    \includegraphics[scale=0.8]{figures/L2warmup.png}
+\end{figure}
+\newline
+Passons maintenant au nombre de répétition. 
+
+\subsubsection{RAM}
+TO DO
 
 
 \section{Optimisations et mesures}
 
 \subsection{Phase 1}
 
-\begin{figure}
-    \includegraphics[scale=0.3]{figures/L2warmup.png}
-\end{figure}
 
 
 \subsection{Phase 2}
