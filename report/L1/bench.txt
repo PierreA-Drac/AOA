@@ -1,0 +1,10 @@
+gcc -O0;6.65
+gcc -O2;1.92
+gcc -O3;1.96
+gcc -Os;6.92
+gcc -O3 -march=native;1.03
+icc -O0;7.87
+icc -O2;0.60
+icc -O3;0.55
+icc -Os;1.09
+icc -O3 -xHost;0.48

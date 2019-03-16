@@ -1,0 +1,40 @@
+Caractéristiques de la machine :
++ Cache L1 de la machine par coeur :
+- 32 kiB L1i
+- 32 kiB L1d
++ Cache L2 de la machine par coeur :
+- 256 kiB L1id
+  
+Paramètres des mesures :
+- Taille pour tenir dans L1 : n = 88 : (n^2 * 4) + (n * 8) = 31680 B < 32 kiB = 2^15 = 32768 B < n = 90 : (n^2 * 4) + (n * 8) = 33120 B
+  On peut observer la nette différence de performance entre un 'n = 88' et un 'n = 90'.
+- Taille pour tenir dans L1 : 89 * (n^2 * 4) + (n * 8) = 32396 B < 32 kiB = 32768 B
+- Nombre de répétition du warm-up : 1000. Ce nombre est suffisant pour
+  avoir ensuite des mesures stables dans tout nos tests (car les caches
+  sont remplis avec nos tableaux), choisi par observation.
+- Nombre de répétition des mesures : on choisi un nombre qui nous permet
+  d'avoir à peu près 3 secondes par méta-répétition. Ce nombre vari en
+  fonction de la taille de notre tableau. Avoir quelques secondes de
+  mesures permet d'avoir une faible marge d'erreur de mesures des cycles
+  avec un RDTSC. Par exemple, pour une taille de 89, on peut choisir 1000000.
+- Nombre de méta-répétition des mesures : 31. C'est le nombre donné dans la
+  consigne, qui est suffisant pour avoir un grand nombre de mesure qui ne
+  varie que très peu (par observation).
+  
++ Nous prenons la valeur médiane des mesures issues des méta-répétitions.
++ On assigne le programme de calcul au coeur n°2 de la machine, sur son
+numéro de thread physique, dans le but de limiter les changements de
+contexte et de mémoire cache.
++ Les tests sont effectué en rescue mode, sans interface graphique, avec le
+minimum de tâches tournant en arrière plan.
+
+Nous avons testé le flag -Ofast qui permet d'activer des optimisation
+mathémtiques qui ne respectent pas forcément certains standards. TODO Développer
+le gain et la dangerosité si on ne peux pas vérifier la validité des calculs.
+Options ciblées (ce qui consitue notre code) : fonctions inline, optimisations
+sur les boucles, les mathématiques, les branchements.
+Autres options testées mais sans gain ou gain néfatif par rapport à '-Ofast
+-march=native' : -faggressive-loop-optimizations, -fbranch-probabilities,
+-fdelayed-branch, -fexpensive-optimizations, -finline-functions, -floop-block,
+-floop-interchange, -floop-unroll-and-jam, -funsafe-math-optimizations.
+Avec gain : -funroll-all-loops.

@@ -58,7 +58,7 @@ int main (int argc, char *argv[]) {
         uint64_t t2 = rdtsc();
 
         /* Print performance. */
-        printf ("%.2f cycles/Fused-Multiply-Exponential\n", (t2 - t1) / ((float) size * size * repm));
+        printf ("%.2f\n", (t2 - t1) / ((float) size * size * repm));
 
         /* Print output. */
         /* if (m == 0) */
