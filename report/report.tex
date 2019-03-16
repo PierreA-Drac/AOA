@@ -209,6 +209,27 @@ Le projet que nous vous présentons aujourd'hui consiste à analyser puis,
 grâce à nos mesures, optimiser un code de calcul, appelé kernel.
 
 TODO
+Afin d'étudier les différents niveaux de mémoires chaque membre du groupe 
+analysera un type précis.
+
+\begin{description}
+    \item[Pierre] Le cache L1, paramètre de l'ordianteur : 
+		\begin{itemize}
+				\item TO DO
+				\item fréquence
+		\end{itemize}
+    \item[Océne ] Le cache L2, paramètre de l'ordinateur : 
+		\begin{itemize}
+			\item cache L1 : 32K,
+			\item cache L2 : 256K,
+			\item fréquence 2,40GHz
+		\end{itemize}
+    \item[Camille] La RAM, paramètre de l'ordianteur : 
+        \begin{itemize}
+			\item TO DO
+			\item fréquence
+		\end{itemize}
+\end{description} 
 
 Le déroulement du projet s'est effectué en plusieurs étapes distinctes :
 \begin{description}
@@ -228,6 +249,42 @@ Le déroulement du projet s'est effectué en plusieurs étapes distinctes :
 
 \section{Analyse du code}
 
+Avant de pouvoir faire toutes les mesures il faut trouver la taille des 
+données d'entrée. Pour cela il faut dans un premier connaitre la taille 
+de ce dont on a besoin. Dans notre programme nous avons deux tableaux :
+\begin{itemize}
+    \item un tableau de float à deux dimensions dont la taille en fonction
+    de n est 4n*n
+    \item un tableau de double à une dimension dont la taille en fonction
+    de n est 8n
+\end{itemize}
+
+La taille totale de nos données d'entrées est donc 4n*n+8n.
+
+\subsection{Cache L1}
+\subsection{Cache L2}
+Pour que les deux tableaux entrent entièrement dans le cache L2 il faut 
+que la formule respecte les contraintes suivantes : 
+\begin{itemize}
+    \item la taille totale doit être plus grande que la taille du cache 
+    L1 (1); pour plus sécurité il a été décidé que la taille totale devait 
+    être au moins trois fois plus grande que celle du L1, 
+    \item L2 partage sa mémoire pour stocker à la fois les instructions, 
+    les données et ce qui tourne en background on ne peut donc en utiliser 
+    que 90\% (2). 
+\end{itemize}
+Ces deux contraintes peuvent être transformée sous forme d'inéquation :
+\begin{itemize}
+    \item (1) : 3*TL1<4n*n+8n,
+    \item (2) : 4n*n+8n<=0,9*TL2
+\end{itemize}
+Après la résolution de ces équations on obtient n=156 comme minimum et 
+n=242 comme maximum.
+
+\subsection{RAM}
+
+
+
 \section{Protocole expérimental}
 
 La mise en place d'un protocole expérimental de mesure est une étape nécessaire
@@ -239,7 +296,10 @@ chaque tentative d'optimisation, le protocole doit nous permettre de mesurer
 l'impact de cette dernière, qu'il soit positif ou négatif, et enfin de le
 quantifier.
 
+
 TODO
+
+
 
 \subsection{Théorie}
 
@@ -247,21 +307,44 @@ Lors de nos expériences, il ne faut pas oublier que le hasard ou l'aléa des
 mesures peuvent biaiser un résultat. Afin d'éviter cela, il faut donc utiliser
 une valeur moyenne ou une valeur médiane.
 
-TODO
+\subsubsection{Analyse de sensibilité}
+
+Une fois que l'on connait la taille des données à fourni en entrée, 
+il faut faire l'analyse de sensibilité pour les autres paramètres. 
+\begin{description}
+    \item[Le nombre de métarépétition] Il nous est donné, il est de 31.
+    \item[Le nombre de warmup] Il doit se situer entre 1 et 1000. Pour le 
+    déterminer il doit être le seul paramètre que l'ont fait varier. On fait 
+    plusieurs exections et avec les valeurs obteunues on fait une courbe pour 
+    voir à partir de quelle valeur cela devient stable. Il faut aussi vérifier 
+    que (médiane-minimum)/minimum est inférieur à 5\%. 
+    \item[Le nombre de repetitions] On le trouve de la même manière que 
+    le nombre de warmup.
+\end{description}
+
 
 \subsection{Pratique}
+\subsection{Cache L1}
+\subsection{Cache L2}
+\subsection{RAM}
 
-TODO
+
 
 \section{Optimisations et mesures}
 
 \subsection{Phase 1}
+
+\begin{figure}
+    \includegraphics[scale=0.3]{figures/L2warmup.png}
+\end{figure}
+
 
 \subsection{Phase 2}
 
 \section{Conclusion}
 
 TODO
+
 
 \newpage
 \section*{Acronymes}
