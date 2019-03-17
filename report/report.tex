@@ -234,7 +234,7 @@ assignatons :
         \end{itemize}
     \item[Camille] RAM : 
         \begin{itemize}
-            \item TO DO
+            \item FICHIER PDF ANNEXE
         \end{itemize}
 \end{description} 
 
@@ -366,7 +366,7 @@ comme maximum.
 
 \subsubsection{RAM}
 
-TODO
+FICHIER PDF ANNEXE
 
 \subsubsection{Analyse de sensibilité}
 
@@ -469,7 +469,7 @@ stable, les variations sont minimes. J'ai chosit comme nombre de répétition
 
 \subsubsection{RAM}
 
-TODO
+FICHIER PDF ANNEXE
 
 \section{Optimisations et mesures}
 
@@ -487,29 +487,40 @@ des modifications.
 
 \begin{tabular}{|c|c|c|}
   \hline
-	Numéro  & Commande & Résultat\\
+	Numéro  & Commande & Résultat (médiane)\\
   \hline
-  1 & gcc -O2 & ?? \\
+  1 & gcc -O2 & 39,93 \\
     \hline
-  2 & gcc -O3 & ?? \\
+  2 & gcc -O3 & 37,62 \\
     \hline
-  3 & gcc -O3 -march=native & ?? \\
+  3 & gcc -O3 -march=native & 37,79 \\
     \hline
-  4 & icc -O2 & ?? \\
+  4 & icc -O2 & 17,79 \\
     \hline
-  5 & icc -O3 & ?? \\
+  5 & icc -O3 & 17,77 \\
     \hline
-  6 & icc -O3 -xHost & ?? \\
+  6 & icc -O3 -xHost & 17,74 \\
   \hline
 \end{tabular}
 
+On remarque avec ces résultats que icc rend l'exection plus rapique que 
+gcc néamoins entre les différentes options d'optimisation de change pas 
+grand chose contrairement à gcc qui entre O2 et O3 gagne quelques secondes.
+
+A l'aide de likwid on peut observer que le volume de data est différent 
+entre l'execution avec icc et gcc est différent, il est d'environ 37 GBytes 
+avec gcc et 7 GBytes avec icc. Le miss rate est équivalent entre les deux 
+compilateur.
+
+
+
 \subsubsection{RAM}
 
-TODO
+FICHIER PDF ANNEXE
 
 \subsection{Phase 2}
 
-TODO
+TODO 
 
 \section{Conclusion}
 
