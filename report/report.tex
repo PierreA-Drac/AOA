@@ -361,14 +361,31 @@ données.
 \newline
 Voici, ci-contre le graphic obtenu pour trouver le bon nombre de warmup. 
 On peut observer que le nombre de cycle semble se stabiliser au alentour 
-de 100 warmup. Pour plus de sécurité j'ai choisit 150 pour le nombre de 
+de 100 warmup, Figure 1. Pour plus de sécurité j'ai choisit 150 pour le nombre de 
 warmup.
 
 \begin{figure}
-    \includegraphics[scale=0.8]{figures/L2warmup.png}
+    \includegraphics[scale=0.8]{figures/L2/L2warmup.png}
+    \caption{Sans l'exponentiel}
 \end{figure}
-\newline
-Passons maintenant au nombre de répétition. 
+
+J'ai ensuite vérifié avec le calcul de l'exponetiel et on obtient bien le 
+même résultat, Figure 2. 
+
+\begin{figure}
+    \includegraphics[scale=0.8]{figures/L2/L2warmup2.png}
+    \caption{Avec l'exponentiel}
+\end{figure}
+
+
+Pour trouver le bon nombre de répétition j'ai uniquement fait les test avec
+l'exponentiel. 
+Comme vous pouvez le voir, Figure 3, on peut remarquer que l'ensemble est stable, les
+variations sont minimes. J'ai chosit comme nombre de répétition 1200.
+\begin{figure}
+    \includegraphics[scale=0.8]{figures/L2/L2repet.png}
+    \caption{ }
+\end{figure}
 
 \subsubsection{RAM}
 TO DO
@@ -377,7 +394,9 @@ TO DO
 \section{Optimisations et mesures}
 
 \subsection{Phase 1}
-
+\subsubsection{L1}
+\subsubsection{L2}
+\subsubsection{RAM}
 
 
 \subsection{Phase 2}

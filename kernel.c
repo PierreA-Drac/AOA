@@ -16,7 +16,7 @@ void baseline(unsigned n, float a[n][n], double b[n])
         for (i = 0; i < n; i++) {
             if (j == 0)
                 b[i] = 1.0;
-            b[i] *= exp(a[i][j]);
+           b[i] *= exp(a[i][j]);
         }
     }
 }
