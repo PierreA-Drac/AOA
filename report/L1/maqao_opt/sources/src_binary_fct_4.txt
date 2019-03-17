@@ -1,0 +1,64 @@
+/home/pierre/Bureau/AOA//driver.c: 13 - 73
+--------------------------------------------------------------------------------
+
+13:     for (int i = 0; i < n; i++)
+14:         for (int j = 0; j < n; j++)
+15:             a[i][j] = -1.0 + fmodf((float) rand() / (float) rand(), 2.0);
+16: }
+17: 
+18: static void init_array_1x (int n, double a[n]) {
+19:     for (int i = 0; i < n; i++)
+20:         a[i] = (double) rand() / RAND_MAX;
+21: }
+22: 
+23: 
+24: int main (int argc, char *argv[]) {
+25:     /* Check command line arguments. */
+26:     if (argc != 4)
+27:         return fprintf (stderr, "Usage: %s <size> <nb warmup repets> <nb measure repets>\n", argv[0]), 1;
+28: 
+29:     int i, m;
+30: 
+31:     /* Get command line arguments. */
+32:     int size = atoi (argv[1]); /* Matrix size. */
+33:     int repw = atoi (argv[2]); /* Repetition number for warmup. */
+34:     int repm = atoi (argv[3]); /* Repetition number for measures. */
+35:     
+36:     /* Allocate arrays. */
+37:     float (*a)[size] = malloc (size * size * sizeof *a[0]);
+38:     double *b        = malloc (size        * sizeof *b);
+39: 
+40:     for (m = 0; m < NB_METAS; m++) {
+41:         /* Init arrays. */
+42:         srand(0);
+43:         init_array_2x (size, a);
+44:         init_array_1x (size, b);
+45: 
+46:         /* Warmup (repw repetitions in first meta, 1 repet in next metas). */
+47:         if (m == 0) {
+48:             for (i = 0; i < repw; i++)
+49:                 baseline (size, a, b);
+50:         } else {
+51:             baseline (size, a, b);
+52:         }
+53: 
+54:         /* Measure repm repetitions. */
+55:         uint64_t t1 = rdtsc();
+56:         for (i = 0; i < repm; i++)
+57:             baseline (size, a, b);
+58:         uint64_t t2 = rdtsc();
+59: 
+60:         /* Print performance (number of fused-multiply-exponential per cycle). */
+61:         printf ("%.2f\n", (t2 - t1) / ((float) size * size * repm));
+62: 
+63:         /* Print output. */
+64:         /* if (m == 0) */
+65:             /* print_array (size, a); */
+66: 
+67:     }
+68:     /* Free arrays. */
+69:     free (a);
+70:     free (b);
+71: 
+72:     return EXIT_SUCCESS;
+73: }

@@ -11,14 +11,16 @@ n=88
 # Number of repetition for first warm-up.
 wrep=1000
 # Number of repetition of kernel function for one meta-repetition (about 3s of execution time).
-krep=1000000
+krep=100000
 # Number of meta-repetition (according to source code, it's a constant).
 mrep=31
 
+# Result directory.
+res_dir='./report/L1'
 # Temporary file used to store results.
 tmp='/tmp/bench'
 # Result file.
-res='./report/L1/bench.txt'
+res="$res_dir/compil.txt"
 
 # Global functions
 # ==============================================================================
@@ -90,15 +92,17 @@ for (( i = 0; i < ${#cc[*]}; i++ )); do
     res $tmp >> $res
 done
 
-# Benchmark with MAQAO
-# ==============================================================================
-
 # Compiler and flags for reference benchmark.
 cc_ref="gcc"
 cflags_ref="-O2 -g"
 # Compiler and flags for optimal compilation (most speed-up).
 cc_opt=`cat $res | sed -e 's/\(.*\);\(.*\);\(.*\)/\3;\1;\2/' | sort -g | cut -d';' -f2 | sed -e '2,$ d'`
 cflags_opt=`cat $res | sed -e 's/\(.*\);\(.*\);\(.*\)/\3;\1;\2/' | sort -g | cut -d';' -f3 | sed -e '2,$ d'`
+# Load the MSR kernel module.
+sudo modprobe msr
+
+# Benchmark with MAQAO
+# ==============================================================================
 
 # Reference benchmark.
 echo "================================================================================"
@@ -106,7 +110,7 @@ time=`date '+%s'`
 echo -e "\033[1;33mBenchmark with MAQAO and \033[1;31m'$cc_ref $cflags_ref'\033[1;33m :\033[0;37m"
 compil $cc_ref "$cflags_ref"
 echo -e -n "\033[m"
-rm -rf maqao_ref && maqao oneview -xp=maqao_ref --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep"
+rm -rf maqao_ref && maqao oneview -xp="$res_dir/maqao_ref" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep"
 echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
 
 # Greatest speed-up benchmark.
@@ -115,7 +119,29 @@ time=`date '+%s'`
 echo -e "\033[1;33mBenchmark with MAQAO and \033[1;31m'$cc_opt $cflags_opt'\033[1;33m :\033[0;37m"
 compil $cc_opt "$cflags_opt" "-funroll-loops"
 echo -e -n "\033[m"
-rm -rf maqao_opt && maqao oneview -xp=maqao_opt --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep" --force-all-loops
+rm -rf maqao_opt && maqao oneview -xp="$res_dir/maqao_opt" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep" --force-all-loops
+echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
+echo "================================================================================"
+
+# Benchmark with LIKWID
+# ==============================================================================
+
+# Reference benchmark.
+echo "================================================================================"
+time=`date '+%s'`
+echo -e "\033[1;33mBenchmark with LIKWID and \033[1;31m'$cc_ref $cflags_ref'\033[1;33m :\033[0;37m"
+compil $cc_ref "$cflags_ref"
+echo -e -n "\033[m"
+sudo likwid-perfctr -M 0 -C 1 -g L2 -g L2CACHE ./baseline $n $wrep $krep | tee "$res_dir/likwid_ref.txt"
+echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
+
+# Greatest speed-up benchmark.
+echo "================================================================================"
+time=`date '+%s'`
+echo -e "\033[1;33mBenchmark with LIKWID and \033[1;31m'$cc_opt $cflags_opt'\033[1;33m :\033[0;37m"
+compil $cc_opt "$cflags_opt" "-funroll-loops"
+echo -e -n "\033[m"
+sudo likwid-perfctr -M 0 -C 1 -g L2 -g L2CACHE ./baseline $n $wrep $krep | tee "$res_dir/likwid_opt.txt"
 echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
 echo "================================================================================"
 
