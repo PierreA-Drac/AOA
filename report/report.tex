@@ -234,7 +234,7 @@ assignations :
         \end{itemize}
     \item[Camille] RAM : 
         \begin{itemize}
-            \item FICHIER PDF ANNEXE
+            \item Voir le fichier \enquote{.odt} annexe envoyé par Camille.
         \end{itemize}
 \end{description} 
 
@@ -341,10 +341,11 @@ Ci-dessous les paramètres des mesures :
         fonction de la taille de notre tableau. Avoir quelques secondes de
         mesures permet d'avoir une faible marge d'erreur de mesures des cycles
         avec un RDTSC. Par exemple, pour une taille de 89, on peut choisir
-        1000000.
+        100000.
 \end{enumerate}
 
 \subsubsection{Cache L2}
+
 Pour que les deux tableaux entrent entièrement dans le cache L2, il faut 
 que la formule respecte les contraintes suivantes : 
 \begin{itemize}
@@ -366,7 +367,7 @@ comme maximum.
 
 \subsubsection{RAM}
 
-FICHIER PDF ANNEXE
+Voir le fichier \enquote{.odt} annexe envoyé par Camille.
 
 \subsubsection{Analyse de sensibilité}
 
@@ -418,30 +419,32 @@ Pour vérifier le calcul théorique de la taille des données j'ai utilisé
 likwid-perftcr afin de voir si les données transitaient bien par le cache L2.
 Après avoir compilé avec gcc uniquement j'ai exécuté l'exécutable avec likwid et
 voici les résultats obtenus :
-\newline
 
-\begin{tabular}{|c|c|}
-  \hline
-  n & Data Volume (GByte) \\
-  \hline
-  100 & 4,24 \\
-  \hline
-  150 & 14,06 \\
-  \hline
-  220 & 37,9 \\
-  \hline
-  235 & 34,4 \\
-  \hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        n & Data Volume (GByte) \\
+        \hline
+        100 & 4,24 \\
+        \hline
+        150 & 14,06 \\
+        \hline
+        220 & 37,9 \\
+        \hline
+        235 & 34,4 \\
+        \hline
+    \end{tabular}
+\end{table}
 
-On observe que ces résultats sont en corrélation avec les résultats théoriques
-en dessous de 156 pratiquement aucune donnée ne passe par le cache L2 et 
+On observe que ces résultats sont en corrélation avec les résultats théoriques :
+en dessous de 156 pratiquement aucune donnée ne passe par le cache L2, et 
 quand on se rapproche de 242 une partie des données ne semble plus passer 
-dans L2 je suppose donc que ces données vont directement dans le cache L3.
+dans L2. Je suppose donc que ces données vont directement dans le cache L3.
 Au vu de ces informations, j'ai choisi de prendre 220 comme taille de 
 données.
 
-Voici, ci-contre le graphique obtenu pour trouver le bon nombre de warmup. On
+Voici ci-contre le graphique obtenu pour trouver le bon nombre de warmup. On
 peut observer que le nombre de cycles semble se stabiliser au alentour de 100
 warmup. Pour plus de sécurité j'ai choisi 150 pour le nombre de warmup.
 
@@ -469,7 +472,7 @@ stable, les variations sont minimes. J'ai choisit comme nombre de répétitions
 
 \subsubsection{RAM}
 
-FICHIER PDF ANNEXE
+Voir le fichier \enquote{.odt} annexe envoyé par Camille.
 
 \section{Optimisations et mesures}
 
@@ -598,38 +601,38 @@ trouvons l'ajout d'une \textit{tail loop}.
 
 \subsubsection{Cache L2}
 
-\begin{tabular}{|c|c|c|}
-  \hline
-	Numéro  & Commande & Résultat (médiane)\\
-  \hline
-  1 & gcc -O2 & 39,93 \\
-    \hline
-  2 & gcc -O3 & 37,62 \\
-    \hline
-  3 & gcc -O3 -march=native & 37,79 \\
-    \hline
-  4 & icc -O2 & 17,79 \\
-    \hline
-  5 & icc -O3 & 17,77 \\
-    \hline
-  6 & icc -O3 -xHost & 17,74 \\
-  \hline
-\end{tabular}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Numéro & Commande & Résultat (médiane)\\
+        \hline
+        1 & gcc -O2 & 39,93 \\
+        \hline
+        2 & gcc -O3 & 37,62 \\
+        \hline
+        3 & gcc -O3 -march=native & 37,79 \\
+        \hline
+        4 & icc -O2 & 17,79 \\
+        \hline
+        5 & icc -O3 & 17,77 \\
+        \hline
+        6 & icc -O3 -xHost & 17,74 \\
+        \hline
+    \end{tabular}
+\end{table}
 
-On remarque avec ces résultats que icc rend l'exection plus rapique que 
-gcc néamoins entre les différentes options d'optimisation de change pas 
-grand chose contrairement à gcc qui entre O2 et O3 gagne quelques secondes.
+On remarque avec ces résultats que icc rend l'exécution plus rapide que 
+gcc, néanmoins, les différentes options d'optimisation n’ont pas un impact
+considérable contrairement à gcc qui entre O2 et O3 gagne quelques secondes.
 
-A l'aide de likwid on peut observer que le volume de data est différent 
-entre l'execution avec icc et gcc est différent, il est d'environ 37 GBytes 
-avec gcc et 7 GBytes avec icc. Le miss rate est équivalent entre les deux 
-compilateur.
-
-
+À l'aide de LIKWID, on peut observer que le volume de data est différent 
+entre l’exécution avec icc et gcc, il est d'environ 37 GBytes avec gcc et
+7 GBytes avec icc. Le miss rate est équivalent entre les deux compilateur.
 
 \subsubsection{RAM}
 
-FICHIER PDF ANNEXE
+Voir le fichier \enquote{.odt} annexe envoyé par Camille.
 
 \subsection{Phase 2}
 
