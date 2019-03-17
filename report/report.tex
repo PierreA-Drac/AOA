@@ -196,7 +196,7 @@ de nombreuses applications concernant des sujets variés, tel que la
 simulation du climat et des évènements météorologiques, la simulation
 d'essais nucléaires, de l'effet d'un médicament sur un corps, ou encore
 des astres et de l'univers. Ce rapport s'articulera donc autour de l'analyse et
-de l'optimisation d'un code de calcul, coeur des simulations numériques
+de l'optimisation d'un code de calcul, cœur des simulations numériques
 présentés ci-dessus.
 
 \end{abstract}
@@ -209,7 +209,7 @@ Le projet que nous vous présentons aujourd'hui consiste à analyser puis, grâc
 nos mesures, optimiser un code de calcul, appelé kernel. Les mesures doivent
 s'effectuer à l'aide de l'instruction \textit{x86} \textit{RDTSC}, et des deux
 outils d'analyse de performance suivant : \textit{MAQAO} et \textit{LIKWID}.
-\textit{RDTSC} nous permet de mesurer le nombre de cycle entre deux instants,
+\textit{RDTSC} nous permet de mesurer le nombre de cycles entre deux instants,
 \textit{MAQAO} rends possible l'exécution d'analyses statiques (\textit{CQA}) et
 dynamiques (\textit{LPROF}) d'un binaire, présentées par un rapport haut niveau
 à l'aide de \textit{ONE-VIEW}, enfin \textit{LIKWID} permet d'obtenir un grand
@@ -217,7 +217,7 @@ nombre de métriques très précises concernant, notamment, l'usage de la mémoi
 
 Afin d'étudier les différents niveaux de la hiérarchie mémoire, chaque membre du
 groupe analysera un niveau qu'il se verra assigné. Ci-dessous la liste des
-assignatons :
+assignations :
 \begin{description}
 
     \item[Pierre] Cache L1 : 
@@ -257,7 +257,7 @@ Le déroulement du projet s'est effectué en plusieurs étapes distinctes :
 \section{Analyse du code}
 
 Présentons notre kernel par son prototype, que nous observons sur le
-Listing~\ref{lst.baseline.noopt.prot} Nous voyons que 3 variables manipulées :
+Listing~\ref{lst.baseline.noopt.prot} Nous voyons qu’il y a 3 variables qui sont manipulées :
 \begin{itemize}
     \item $n$ correspond à la taille de nos tableaux.
     \item $a$ est un tableau de \textit{float} à deux dimensions dont la taille
@@ -276,7 +276,7 @@ void baseline(unsigned n, float a[n][n], double b[n])
 
 Nous sommes face à un code de calcul très simple en apparence, illustré dans le
 Listing~\ref{lst.baseline.noopt} : deux boucles imbriquées, un branchement, un
-calcul mêlant multiplication et exponentiel. Plusieurs éléments remarquables qui
+calcul mêlant multiplication et exponentiel. Mais plusieurs éléments remarquables qui
 risquent de poser problème au niveau de la rapidité d'exécution apparaissent
 alors : les boucles impliquent qu'il faut prêter attention au sens de parcours
 des tableaux, le branchement nous laisse penser qu'il faudrait essayer de le
@@ -310,18 +310,18 @@ quantifier.
 \subsection{Théorie}
 
 Lors de nos expériences, de nombreux paramètres peuvent être sujets à des
-variables aléatoires ou à l'erreur de mesure, ainsi un résultat peut être
-biaiser. Afin d'éviter cela, il est impératif d'utiliser une valeur
+variations aléatoires ou à des erreurs de mesure, ainsi un résultat peut être
+biaisé. Afin d'éviter cela, il est impératif d'utiliser une valeur
 représentative de nos différentes mesures : une valeur moyenne ou une valeur
 médiane. La valeur médiane semble être un meilleur candidat contrairement à la
-moyenne, car cette dernière peut-être fortement modifié par une valeure extrème
+moyenne, car cette dernière peut-être fortement modifié par une valeur extrême
 qui n'as pas lieu d'être. C'est donc la valeur médiane que nous prendrons des
-réslutats de nos mesures successives issues des méta-répétitions.
+résultats de nos mesures successives issues des méta-répétitions.
 
 Pour que chaque membre de l'équipe puisse travailler sur son niveau de mémoire
 cache, il nous faut trouver la taille des données d'entrée à utiliser. Selon le
-protoype présenté dans le Listing~\ref{lst.baseline.noopt.prot}, la taille
-totale de nos données d'entrées est de $4n^2 + 8n$, avec $n$ la taille rentrée
+prototype présenté dans le Listing~\ref{lst.baseline.noopt.prot}, la taille
+totale de nos données d'entrées est de $4n^2 + 8n$, avec $n$ la taille entrée
 en paramètre du programme.
 
 \subsubsection{Cache L1}
@@ -330,14 +330,14 @@ Ci-dessous les paramètres des mesures :
 \begin{enumerate}[(1)]
     \item Taille pour tenir dans L1 : $n = 88$.
         En effet, $(n^2 * 4) + (n * 8) = 31680 B$, sachant que la taille du
-        cache est de $32 kiB = 2^{15} = 32768 B$, et que si l'on prends $n =
+        cache est de $32 kiB = 2^{15} = 32768 B$, et que si l'on prend $n =
         90$, on obtient $33120 B$, on a bien : $n = 88 < L1 < n = 90$ avec une
         bonne marge de sécurité.
-    \item Nombre de répétition du warm-up : 1000. Ce nombre est suffisant pour
-        avoir ensuite des mesures stables dans tout nos tests car les caches
+    \item Nombre de répétitions du warm-up : 1000. Ce nombre est suffisant pour
+        avoir ensuite des mesures stables dans tous nos tests car les caches
         sont remplis avec nos tableaux, choisi par observation.
-    \item Nombre de répétition des mesures : on choisi un nombre qui nous permet
-        d'avoir à peu près 3 secondes par méta-répétition. Ce nombre vari en
+    \item Nombre de répétitions des mesures : on choisit un nombre qui nous permet
+        d'avoir à peu près 3 secondes par méta-répétition. Ce nombre varie en
         fonction de la taille de notre tableau. Avoir quelques secondes de
         mesures permet d'avoir une faible marge d'erreur de mesures des cycles
         avec un RDTSC. Par exemple, pour une taille de 89, on peut choisir
@@ -356,7 +356,7 @@ que la formule respecte les contraintes suivantes :
     approximativement que 90\% (2). 
 \end{itemize}
 
-Ces deux contraintes peuvent être transformée sous forme d'inéquation :
+Ces deux contraintes peuvent être transformées sous forme d'inéquation :
 \begin{itemize}
     \item (1) : $3*TL1 < 4n*n + 8n$,
     \item (2) : $4n*n + 8n \le 0,9*\text{TL2}$
@@ -370,7 +370,7 @@ FICHIER PDF ANNEXE
 
 \subsubsection{Analyse de sensibilité}
 
-Une fois que l'on connait la taille des données à fournie en entrée, 
+Une fois que l'on connaît la taille des données a fournir en entrée, 
 il faut effectuer une analyse de sensibilité pour les autres paramètres. 
 \begin{description}
     \item[Nombre de méta-répétition des mesures] Il nous est donné à 31. C'est
@@ -389,27 +389,27 @@ il faut effectuer une analyse de sensibilité pour les autres paramètres.
 
 \subsection{Pratique}
 
-Lors de nos première tentatives pour trouver les paramètres, nous avons remarqué
+Lors de nos premières tentatives pour trouver les paramètres, nous avons remarqué
 que ce qui prenait le plus de temps dans notre noyau de calcul était
 l'exponentiel. Afin de pouvoir vérifier si nos paramètres sont corrects, nous
 avons donc modifié le fichier \textit{kernel.c} pour que ce soit le temps de
 récupération des données qui soit le plus grand. Cette version n'est utilisé que
 pour tester la véracité des paramètres trouvés dans la section précédente, et
-nous pour évaluer les performances des optimisations ou des compilateurs.
+non pas pour évaluer les performances des optimisations ou des compilateurs.
 
 \subsubsection{Cache L1}
 
 On peut observer une nette différence de performance entre un $n = 88$ et un $n
 = 90$, qui se traduit par le fait de tenir ou de ne pas tenir en cache
-\textit{L1}. On assigne le programme de calcul au coeur n°2 de la machine, sur
+\textit{L1}. On assigne le programme de calcul au cœur n°2 de la machine, sur
 son numéro de thread physique, dans le but de limiter les changements de
-contexte et de flush de la mémoire cache. Enfin, les tests sont effectué en
+contexte et de flush de la mémoire cache. Enfin, les tests sont effectués en
 rescue mode, sans interface graphique, avec le minimum de tâches tournant en
-arrière plan.
+arrière-plan.
 
-Tout les mesures effectuées dans le cache L1 sont automatiser par un script
+Toutes les mesures effectuées dans le cache L1 sont automatisées par un script
 (\textit{bench.sh}). Ce script permet d'aisément exécuter l'ensemble des tests
-dans un environement idéal, ainsi que d'assurer la reproductibilité du protocole
+dans un environnement idéal, ainsi que d'assurer la reproductibilité du protocole
 expérimental, critère important d'une méthode scientifique.
 
 \subsubsection{Cache L2}
@@ -442,8 +442,8 @@ Au vu de ces informations, j'ai choisi de prendre 220 comme taille de
 données.
 
 Voici, ci-contre le graphique obtenu pour trouver le bon nombre de warmup. On
-peut observer que le nombre de cycle semble se stabiliser au alentour de 100
-warmup. Pour plus de sécurité j'ai choisit 150 pour le nombre de warmup.
+peut observer que le nombre de cycles semble se stabiliser au alentour de 100
+warmup. Pour plus de sécurité j'ai choisi 150 pour le nombre de warmup.
 
 \begin{figure}[h]
     \includegraphics[scale=0.8]{figures/L2/L2warmup.png}
@@ -458,9 +458,9 @@ même résultat.
     \caption{Avec l'exponentiel}
 \end{figure}
 
-Pour trouver le bon nombre de répétition j'ai uniquement fait les test avec
+Pour trouver le bon nombre de répétitions j'ai uniquement fait les tests avec
 l'exponentiel. Comme vous pouvez le voir, on peut remarquer que l'ensemble est
-stable, les variations sont minimes. J'ai chosit comme nombre de répétition
+stable, les variations sont minimes. J'ai choisit comme nombre de répétitions
 1200.
 \begin{figure}[h]
     \includegraphics[scale=0.8]{figures/L2/L2repet.png}
@@ -475,7 +475,7 @@ FICHIER PDF ANNEXE
 
 Dans cette section, nous présentons les résultats des mesures des différentes
 tentatives d'optimisation du code. La phase 1 correspond, pour résumer, à
-identifier les points chauds et tester différentes configuration de compilation.
+identifier les points chauds et tester différentes configurations de compilation.
 La phase 2 correspond, notamment, à une optimisation active du code en y apportant
 des modifications.
 
@@ -483,42 +483,42 @@ des modifications.
 
 \subsubsection{Cache L1}
 
-Pour cette première phase de test sur un jeu de donneé dans le niveau de cache
+Pour cette première phase de test sur un jeu de donnée dans le niveau de cache
 L1, nous avons testé 3 compilateurs (\enquote{gcc}, \enquote{icc},
-\enquote{clang}) avec différents jeu de flags de compilation. Nous précisons que
+\enquote{clang}) avec différents jeux de flags de compilation. Nous précisons que
 l'intégralité de nos résultats sont disponibles sous formes brut dans les
 fichiers/répertoires suivants : \enquote{compil.txt},
 \enquote{likwid\_\{ref,opt\}}, \enquote{maqao\_\{ref,opt\}}.
 
 En plus des flags qui sont donnés dans la consigne, nous avons également testé
-le flag \enquote{-Ofast} qui permet d'activer des optimisation mathématiques qui
-ne respectent pas les standards en vigueur. Un programme qui ne requiert pas une
+le flag \enquote{-Ofast} qui permet d'activer des optimisations mathématiques qui
+ne respecte pas les standards en vigueur. Un programme qui ne requiert pas une
 stabilité numérique très précise obtiendra des gains considérable avec cette
-option, cependant, cela peut-être dangereux de l'activer sans possibilité de
+option, cependant, cela peut être dangereux de l'activer sans possibilité de
 vérifier les résultats des calculs du kernel. Nous avons ici pris le pari de
 l'activer.
 
-Nous avons aussi testés d'autres options ciblées par ce qui consitue notre code
-: fonctions inline, optimisations sur les boucles, sur les fonctions
-mathématiques ou encore sur les branchements. La liste des flags ci-dessous
-n'aura pas apporté de gain, ou pire, aura provoqué une accélération négatif par
-rapport à \enquote{-Ofast -march=native} :
+Nous avons aussi testés d'autres options ciblées :
+fonctions inline, optimisations sur les boucles, sur les fonctions
+mathématiques ou encore sur les branchements. La liste ci-dessous présente
+les flags qui n'auront pas apporté de gain, ou pire, auront provoqué une accélération
+négative par rapport à \enquote{-Ofast -march=native} :
 \enquote{-faggressive-loop-optimizations}, \enquote{-fbranch-probabilities},
 \enquote{-fdelayed-branch}, \enquote{-fexpensive-optimizations},
 \enquote{-finline-functions}, \enquote{-floop-block},
 \enquote{-floop-interchange}, \enquote{-floop-unroll-and-jam},
 \enquote{-funsafe-math-optimizations}. Cependant, le flag
 \enquote{-funroll-all-loops}, permettant de forcer l'unrolling des boucles, nous
-aura octroyer un léger gain systématique.
+aura octroyé un léger gain systématique.
 
 Dans la Table~\ref{tab.compil} est présenté la liste des résultats sur les flags
 obligatoires et les flags apportant un gain (les flags inutiles ou ralentissant
-n'ont pas été inclu pour des soucis de visibilité). Nous pouvons ainsi voir que
+ne sont pas inclus pour des soucis de visibilité). Nous pouvons ainsi voir que
 c'est \enquote{gcc}, couplé à certaines options, qui est le plus rapide face à
 \enquote{clang} et \enquote{icc}. Nous notons tout de même l'efficacité
-redoutable de la génération de code spécialiement pour l'architecture hôte
+redoutable de la génération de code spécialement pour l'architecture hôte
 (\enquote{-march=native}), permettant d'utiliser les instructions x86 les plus
-récentes, et des optimisations mathématiques aggressives (\enquote{-Ofast}).
+récentes, et des optimisations mathématiques agressives (\enquote{-Ofast}).
 
 \begin{table}[h]
     \centering
@@ -534,16 +534,16 @@ récentes, et des optimisations mathématiques aggressives (\enquote{-Ofast}).
 Nous avons ensuite utiliser les outils \textit{MAQAO} et \textit{LIKWID} pour
 expliquer les différences de performances entre deux versions du code. Après nos
 tests avec notre script permettant de détecter les flags permettant d'avoir le
-meilleur speed-up, nous allons étudier les différences de performances entres la
+meilleur speed-up, nous allons étudier les différences de performances entre la
 version de référence \enquote{gcc -O2} et la version la plus rapide,
 \enquote{gcc -Ofast -march=native -funroll-all-loops}.
 
 Procédons tout d'abord à une analyse rapide avec \textit{LIKWID}, les résultats
-étants présentés dans la Figure~\ref{fig.likwid_noopt}. Nous pouvons expliquer
+étant présentés dans la Figure~\ref{fig.likwid_noopt}. Nous pouvons expliquer
 la différence de performance par les métriques suivantes concernant la mémoire :
-on observe que la version optmisé à fait un nombre significativement moins
-important que la version de référence d'éviction de données du cache L1 (2051211
-vs. 16140154), ainsi qu'un ratio de miss bien plus faible dans le cache L2
+on observe que la version optimisé à fait un nombre significativement moins
+important que la version de référence d'éviction de données du cache L1 (2.051.211
+vs. 16.140.154), ainsi qu'un ratio de miss bien plus faible dans le cache L2
 (0.0001 vs. 0.0259).
 
 \begin{figure}[h]
@@ -559,13 +559,13 @@ la Figure~\ref{fig.maqao_noopt_global}, nous pouvons déjà avoir une très bonn
 idée des différences entre les deux binaires, justifiant d'une telle
 accélération ($\text{acc} = \frac{212}{41} = 5.2$). Premièrement, nous observons
 que sur le binaire optimisé, nous passons deux fois plus de temps dans la boucle
-que dans la version de référence : cela signifique que les fonctions
+que dans la version de référence : cela signifie que les fonctions
 mathématiques (multiplication, mais surtout l'exponentiel) ont été
 considérablement optimisées. Ensuite, nous voyons que la version de référence
 présente deux chemins (Flow Complexity) dans la boucle, tandis que la version
 optimisée ne présente qu'un chemin d'exécution possible. Nous notons aussi que
-l'efficacité d'accès aux données (Array Access Efficiency) à été augmenté de
-20\% dans la version optimisée, surement par modifications des boucles
+l'efficacité d'accès aux données (Array Access Efficiency) a été augmenté de
+20\% dans la version optimisée, sûrement par modifications des boucles
 imbriquées. Enfin, nous pouvons imaginer une tentative de vectorisation de la
 part du compilateur pour la version optimisée.
 
@@ -573,17 +573,17 @@ part du compilateur pour la version optimisée.
     \centering
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_ref_global.png}
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_opt_global.png}
-    \caption{Au dessus, la version de référence. En dessous, la version avec les
+    \caption{Au-dessus, la version de référence. En dessous, la version avec les
     flags d'optimisation.}
     \label{fig.maqao_noopt_global}
 \end{figure}
 
 Pour finir avec l'analyse de \textit{MAQAO}, sur la
 Figure~\ref{fig.maqao_noopt_func}, nous pouvons observer ce qu'à concrètement
-fait l'optmisation. La fonction exponentiel, qui prenait 14\% du temps, à été
+fait le compilateur. La fonction exponentielle, qui prenait 14\% du temps, à été
 remplacé par une version optimisée \enquote{fini}, ne prenant plus que 1.46\% du
-temps. Nous pouvons voir que le linkage de la bibliothèque mathémtique
-(\textit{libm}) à été remplacé par sa version vectorisé (\textit{libmvec}).
+temps. Nous pouvons voir que le linkage de la bibliothèque mathématique
+(\textit{libm}) a été remplacé par sa version vectorisée (\textit{libmvec}).
 Enfin, nous observons que notre unique boucle à bien été déroulée car nous
 trouvons l'ajout d'une \textit{tail loop}.
 
@@ -591,7 +591,7 @@ trouvons l'ajout d'une \textit{tail loop}.
     \centering
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_ref_func.png}
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_opt_func.png}
-    \caption{Au dessus, la version de référence. En dessous, la version avec les
+    \caption{Au-dessus, la version de référence. En dessous, la version avec les
     flags d'optimisation.}
     \label{fig.maqao_noopt_func}
 \end{figure}
