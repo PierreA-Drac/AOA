@@ -1,0 +1,6 @@
+Loop ID;Module;Function Name;Source Info;Level;Time Average (%);Time Min(s) [TID];Time Max(s) [TID];Time Average(s);
+7;binary;baseline;;Innermost;19.84;8.14 [2261];8.14 [2261];8.14;
+6;binary;baseline;;InBetween;3.88;1.59 [2261];1.59 [2261];1.59;
+9;binary;baseline;;Innermost;0.22;0.09 [2261];0.09 [2261];0.09;
+8;binary;baseline;;Outermost;0.10;0.04 [2261];0.04 [2261];0.04;
+0;binary;main;driver.c:56-57;Innermost;0.05;0.02 [2261];0.02 [2261];0.02;

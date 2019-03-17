@@ -11,7 +11,7 @@ n=88
 # Number of repetition for first warm-up.
 wrep=1000
 # Number of repetition of kernel function for one meta-repetition (about 3s of execution time).
-krep=1000000
+krep=100000
 # Number of meta-repetition (according to source code, it's a constant).
 mrep=31
 
@@ -98,6 +98,8 @@ cflags_ref="-O2 -g"
 # Compiler and flags for optimal compilation (most speed-up).
 cc_opt=`cat $res | sed -e 's/\(.*\);\(.*\);\(.*\)/\3;\1;\2/' | sort -g | cut -d';' -f2 | sed -e '2,$ d'`
 cflags_opt=`cat $res | sed -e 's/\(.*\);\(.*\);\(.*\)/\3;\1;\2/' | sort -g | cut -d';' -f3 | sed -e '2,$ d'`
+# Load the MSR kernel module.
+sudo modprobe msr
 
 # Benchmark with MAQAO
 # ==============================================================================

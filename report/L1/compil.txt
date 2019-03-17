@@ -1,0 +1,23 @@
+gcc;-O0;31.44
+gcc;-O2;22.90
+gcc;-O3;22.58
+gcc;-Os;47.99
+gcc;-O3 -march=native;22.77
+gcc;-Ofast;9.59
+gcc;-Ofast -march=native;4.64
+gcc;-Ofast -march=native -funroll-all-loops;4.42
+clang;-O0;30.38
+clang;-O2;23.18
+clang;-O3;26.04
+clang;-Os;23.11
+clang;-O3 -march=native;26.21
+clang;-Ofast;18.18
+clang;-Ofast -march=native;25.97
+icc;-O0;23.05
+icc;-O2;16.25
+icc;-O3;16.27
+icc;-Os;15.96
+icc;-O3 -xHost;17.08
+icc;-Ofast;16.25
+icc;-Ofast -xHost;16.41
+icc;-Ofast -xHost -funroll-loops -unroll-aggressive;16.39
