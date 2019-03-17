@@ -88,7 +88,7 @@ for (( i = 0; i < ${#cc[*]}; i++ )); do
     echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
     echo "================================================================================"
     # Write the results into the final file.
-    echo -n "$cci;$cflagsi;" >> $res
+    echo -n "$cci,$cflagsi," >> $res
     res $tmp >> $res
 done
 
@@ -96,8 +96,8 @@ done
 cc_ref="gcc"
 cflags_ref="-O2 -g"
 # Compiler and flags for optimal compilation (most speed-up).
-cc_opt=`cat $res | sed -e 's/\(.*\);\(.*\);\(.*\)/\3;\1;\2/' | sort -g | cut -d';' -f2 | sed -e '2,$ d'`
-cflags_opt=`cat $res | sed -e 's/\(.*\);\(.*\);\(.*\)/\3;\1;\2/' | sort -g | cut -d';' -f3 | sed -e '2,$ d'`
+cc_opt=`cat $res | sed -e 's/\(.*\),\(.*\),\(.*\)/\3,\1,\2/' | sort -g | cut -d',' -f2 | sed -e '2,$ d'`
+cflags_opt=`cat $res | sed -e 's/\(.*\),\(.*\),\(.*\)/\3,\1,\2/' | sort -g | cut -d',' -f3 | sed -e '2,$ d'`
 # Load the MSR kernel module.
 sudo modprobe msr
 

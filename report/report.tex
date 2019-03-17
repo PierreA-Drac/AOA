@@ -483,6 +483,119 @@ des modifications.
 
 \subsubsection{Cache L1}
 
+Pour cette première phase de test sur un jeu de donneé dans le niveau de cache
+L1, nous avons testé 3 compilateurs (\enquote{gcc}, \enquote{icc},
+\enquote{clang}) avec différents jeu de flags de compilation. Nous précisons que
+l'intégralité de nos résultats sont disponibles sous formes brut dans les
+fichiers/répertoires suivants : \enquote{compil.txt},
+\enquote{likwid\_\{ref,opt\}}, \enquote{maqao\_\{ref,opt\}}.
+
+En plus des flags qui sont donnés dans la consigne, nous avons également testé
+le flag \enquote{-Ofast} qui permet d'activer des optimisation mathématiques qui
+ne respectent pas les standards en vigueur. Un programme qui ne requiert pas une
+stabilité numérique très précise obtiendra des gains considérable avec cette
+option, cependant, cela peut-être dangereux de l'activer sans possibilité de
+vérifier les résultats des calculs du kernel. Nous avons ici pris le pari de
+l'activer.
+
+Nous avons aussi testés d'autres options ciblées par ce qui consitue notre code
+: fonctions inline, optimisations sur les boucles, sur les fonctions
+mathématiques ou encore sur les branchements. La liste des flags ci-dessous
+n'aura pas apporté de gain, ou pire, aura provoqué une accélération négatif par
+rapport à \enquote{-Ofast -march=native} :
+\enquote{-faggressive-loop-optimizations}, \enquote{-fbranch-probabilities},
+\enquote{-fdelayed-branch}, \enquote{-fexpensive-optimizations},
+\enquote{-finline-functions}, \enquote{-floop-block},
+\enquote{-floop-interchange}, \enquote{-floop-unroll-and-jam},
+\enquote{-funsafe-math-optimizations}. Cependant, le flag
+\enquote{-funroll-all-loops}, permettant de forcer l'unrolling des boucles, nous
+aura octroyer un léger gain systématique.
+
+Dans la Table~\ref{tab.compil} est présenté la liste des résultats sur les flags
+obligatoires et les flags apportant un gain (les flags inutiles ou ralentissant
+n'ont pas été inclu pour des soucis de visibilité). Nous pouvons ainsi voir que
+c'est \enquote{gcc}, couplé à certaines options, qui est le plus rapide face à
+\enquote{clang} et \enquote{icc}. Nous notons tout de même l'efficacité
+redoutable de la génération de code spécialiement pour l'architecture hôte
+(\enquote{-march=native}), permettant d'utiliser les instructions x86 les plus
+récentes, et des optimisations mathématiques aggressives (\enquote{-Ofast}).
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|l|l}
+        \bfseries Compiler & \bfseries Flags & \bfseries Time (s)
+        \csvreader{./L1/compil.txt}{}
+        {\\\hline\csvcoli&\csvcolii&\csvcoliii}
+    \end{tabular}
+    \caption{Benchmarks des compilateurs et flags}
+    \label{tab.compil}
+\end{table}
+
+Nous avons ensuite utiliser les outils \textit{MAQAO} et \textit{LIKWID} pour
+expliquer les différences de performances entre deux versions du code. Après nos
+tests avec notre script permettant de détecter les flags permettant d'avoir le
+meilleur speed-up, nous allons étudier les différences de performances entres la
+version de référence \enquote{gcc -O2} et la version la plus rapide,
+\enquote{gcc -Ofast -march=native -funroll-all-loops}.
+
+Procédons tout d'abord à une analyse rapide avec \textit{LIKWID}, les résultats
+étants présentés dans la Figure~\ref{fig.likwid_noopt}. Nous pouvons expliquer
+la différence de performance par les métriques suivantes concernant la mémoire :
+on observe que la version optmisé à fait un nombre significativement moins
+important que la version de référence d'éviction de données du cache L1 (2051211
+vs. 16140154), ainsi qu'un ratio de miss bien plus faible dans le cache L2
+(0.0001 vs. 0.0259).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.45]{./figures/L1/likwid_noopt.png}
+    \caption{A gauche, la version de référence. A droite, la version avec les
+    flags d'optimisation.}
+    \label{fig.likwid_noopt}
+\end{figure}
+
+Enfin, passons à l'étude avec MAQAO. Sur le page \enquote{Global} présenté par
+la Figure~\ref{fig.maqao_noopt_global}, nous pouvons déjà avoir une très bonne
+idée des différences entre les deux binaires, justifiant d'une telle
+accélération ($\text{acc} = \frac{212}{41} = 5.2$). Premièrement, nous observons
+que sur le binaire optimisé, nous passons deux fois plus de temps dans la boucle
+que dans la version de référence : cela signifique que les fonctions
+mathématiques (multiplication, mais surtout l'exponentiel) ont été
+considérablement optimisées. Ensuite, nous voyons que la version de référence
+présente deux chemins (Flow Complexity) dans la boucle, tandis que la version
+optimisée ne présente qu'un chemin d'exécution possible. Nous notons aussi que
+l'efficacité d'accès aux données (Array Access Efficiency) à été augmenté de
+20\% dans la version optimisée, surement par modifications des boucles
+imbriquées. Enfin, nous pouvons imaginer une tentative de vectorisation de la
+part du compilateur pour la version optimisée.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_ref_global.png}
+    \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_opt_global.png}
+    \caption{Au dessus, la version de référence. En dessous, la version avec les
+    flags d'optimisation.}
+    \label{fig.maqao_noopt_global}
+\end{figure}
+
+Pour finir avec l'analyse de \textit{MAQAO}, sur la
+Figure~\ref{fig.maqao_noopt_func}, nous pouvons observer ce qu'à concrètement
+fait l'optmisation. La fonction exponentiel, qui prenait 14\% du temps, à été
+remplacé par une version optimisée \enquote{fini}, ne prenant plus que 1.46\% du
+temps. Nous pouvons voir que le linkage de la bibliothèque mathémtique
+(\textit{libm}) à été remplacé par sa version vectorisé (\textit{libmvec}).
+Enfin, nous observons que notre unique boucle à bien été déroulée car nous
+trouvons l'ajout d'une \textit{tail loop}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_ref_func.png}
+    \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_opt_func.png}
+    \caption{Au dessus, la version de référence. En dessous, la version avec les
+    flags d'optimisation.}
+    \label{fig.maqao_noopt_func}
+\end{figure}
+
 \subsubsection{Cache L2}
 
 \begin{tabular}{|c|c|c|}
