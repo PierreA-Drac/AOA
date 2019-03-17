@@ -345,8 +345,11 @@ et voici les résultats obtenus :
   n & Data Volume (GByte) \\
   \hline
   100 & 4,24 \\
+  \hline
   150 & 14,06 \\
+  \hline
   220 & 37,9 \\
+  \hline
   235 & 34,4 \\
   \hline
 \end{tabular}
@@ -394,8 +397,28 @@ TO DO
 \section{Optimisations et mesures}
 
 \subsection{Phase 1}
-\subsubsection{L1}
-\subsubsection{L2}
+\subsubsection{Cache L1}
+\subsubsection{Cache L2}
+
+
+\begin{tabular}{|c|c|c|}
+  \hline
+	Numéro  & Commande & Résultat\\
+  \hline
+  1 & gcc -O2 & ?? \\
+    \hline
+  2 & gcc -O3 & ?? \\
+    \hline
+  3 & gcc -O3 -march=native & ?? \\
+    \hline
+  4 & icc -O2 & ?? \\
+    \hline
+  5 & icc -O3 & ?? \\
+    \hline
+  6 & icc -O3 -xHost & ?? \\
+  \hline
+\end{tabular}
+
 \subsubsection{RAM}
 
 
