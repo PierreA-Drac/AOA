@@ -1,8 +1,10 @@
 #include <math.h>
 
-#ifdef OPT1
+#ifdef L1_OPT1
 
-#elif defined OPT2
+#elif defined L2_OPT1
+
+#elif defined L3_OPT1
 
 #else
 
