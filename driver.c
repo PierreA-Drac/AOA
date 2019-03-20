@@ -32,12 +32,12 @@ int main (int argc, char *argv[]) {
     int size = atoi (argv[1]); /* Matrix size. */
     int repw = atoi (argv[2]); /* Repetition number for warmup. */
     int repm = atoi (argv[3]); /* Repetition number for measures. */
-    
-    /* Allocate arrays. */
-    float (*a)[size] = malloc (size * size * sizeof *a[0]);
-    double *b        = malloc (size        * sizeof *b);
 
     for (m = 0; m < NB_METAS; m++) {
+        /* Allocate arrays. */
+        float (*a)[size] = malloc (size * size * sizeof *a[0]);
+        double *b        = malloc (size        * sizeof *b);
+        
         /* Init arrays. */
         srand(0);
         init_array_2x (size, a);
@@ -64,10 +64,9 @@ int main (int argc, char *argv[]) {
         /* if (m == 0) */
             /* print_array (size, a); */
 
+        /* Free arrays. */
+        free (a);
+        free (b);
     }
-    /* Free arrays. */
-    free (a);
-    free (b);
-
     return EXIT_SUCCESS;
 }

@@ -222,11 +222,12 @@ assignations :
 
     \item[Pierre] Cache L1 : 
         \begin{itemize}
-            \item Intel Core i7-6600U
-            \item 32 kiB L1i, 32 kiB L1d
-            \item 256 kiB L2
+            \item Intel Core i7-6600U @ 2.8 GHz, Skylake $6^{\text{ème}}$ génération, 14nm, 2 cœurs 4 threads (Hyper-Threading)
+            \item 32 KiB L1i, 32 KiB L1d (par coeur)
+            \item 256 KiB L2 (par coeur)
+            \item 4096 KiB L3 (partagé)
         \end{itemize}
-    \item[Océne ] Cache L2 : 
+    \item[Océane] Cache L2 : 
         \begin{itemize}
             \item Cache L1 : 32K
             \item Cache L2 : 256K
@@ -306,6 +307,45 @@ ces points chauds seront les cibles de nos optimisations. D'autre part, après
 chaque tentative d'optimisation, le protocole doit nous permettre de mesurer
 l'impact de cette dernière, qu'il soit positif ou négatif, et enfin de le
 quantifier.
+
+\subsection{Driver}
+
+Le code de notre environnement de mesure est séparé en deux parties : le \textit{driver}
+et le \textit{kernel}. Le kernel contient la fonction de calcul à proprement
+dite, sur laquelle nos optimisations se porteront. Le driver est le code qui
+nous permet d'effectuer nos mesures. Le paragraphe suivant sera consacré à une
+rapide explication de son fonctionnement, le code étant accessible dans le fichier
+\enquote{\textit{driver.c}}.
+
+Les premières lignes du driver servent à récupérer les options de mesures
+passées en argument à l'application. Vint ensuite une boucle qui englobe toute
+l'expérience de mesure, elle correspond à l’exécution des méta-répétitions. Une
+méta-répétition est une répétition qui comprend l'expérience dans sa globalité. L'utilité
+d'avoir plusieurs méta-répétitions vient du fait que plusieurs mesures sont
+nécessaire pour être représentatives, car une mesure isolée pourrait être
+biaisée. On prend la mesure médiane issues des différentes méta-répétitions. Les
+premières lignes de la boucle des méta-répétitions correspondent à l'allocation et
+l'initialisation des tableaux utilisés par le kernel. Il faut faire attention à
+bien utiliser la mémoire lors de l'initialisation, sinon Linux pourrait ne pas
+vraiment allouer le tableau en mémoire (initialisation paresseuse). Ensuite,
+nous entrons dans une petite boucle qui effectue le warmup, c'est-à-dire la mise
+en chauffe du processeur. Derrière cette appellation grossière se cache un
+remplissage de la mémoire cache avec nos tableaux, puisque l'on effectue
+plusieurs fois la fonction de calcul \enquote{dans le vide}, sans effectuer de
+mesure. Cette phase de warmup permet de passer le régime transitoire, ou le
+temps de calcul s'améliore à chaque itération, pour arriver dans le régime
+permanent, ou le temps de calcul est stable. Une fois le warmup terminé, on
+passe à la mesure proprement dite, effectué par l'instruction RDTSC. Le choix
+s'est porté sur cette instruction pour son efficacité : en effet, elle appelle
+directement une instruction assembleur x86 correspondante, et son imprécision n'est
+que de quelques dizaines de cycles seulement. Entre nos deux instructions RDTSC
+(start/stop) se trouve une boucle de répétition d'appel du kernel. Cette boucle
+de répétition est nécessaire afin d'avoir une mesure précise : il se trouve que
+si on effectuait un seul appel au kernel, il se pourrait que les instructions de
+mesure (RDTSC) et de contrôle prennent autant ou plus de temps que le code de
+calcul, ce qui biaiserait complètement les résultats. Il faut donc faire
+plusieurs répétitions afin d'avoir un temps de calcul conséquent par rapport au
+reste des instructions.
 
 \subsection{Théorie}
 
@@ -402,16 +442,19 @@ non pas pour évaluer les performances des optimisations ou des compilateurs.
 
 On peut observer une nette différence de performance entre un $n = 88$ et un $n
 = 90$, qui se traduit par le fait de tenir ou de ne pas tenir en cache
-\textit{L1}. On assigne le programme de calcul au cœur n°2 de la machine, sur
-son numéro de thread physique, dans le but de limiter les changements de
-contexte et de flush de la mémoire cache. Enfin, les tests sont effectués en
-rescue mode, sans interface graphique, avec le minimum de tâches tournant en
-arrière-plan.
-
-Toutes les mesures effectuées dans le cache L1 sont automatisées par un script
-(\textit{bench.sh}). Ce script permet d'aisément exécuter l'ensemble des tests
-dans un environnement idéal, ainsi que d'assurer la reproductibilité du protocole
-expérimental, critère important d'une méthode scientifique.
+\textit{L1}. On assigne le programme de calcul au cœur n°2 de la machine avec
+\textit{taskset}, sur son numéro de thread physique, dans le but de limiter les
+changements de contexte et de flush de la mémoire cache. Les tests sont
+effectués en rescue/failsafe mode, sans interface graphique, permettant d'avoir
+un minimum de tâches tournant en arrière-plan. De plus, le gouverneur du
+processeur est sélectionné sur le mode performance et la fréquence est fixé. Toutes
+les mesures effectuées dans le cache L1 sont automatisées par un script
+(\textit{report/L1/P\{1,2\}/bench.sh}). Ce script permet d'aisément exécuter
+l'ensemble des tests dans un environnement idéal, ainsi que d'assurer la
+reproductibilité du protocole expérimental, critère important d'une méthode
+scientifique. Les compilateurs utilisés sont \textit{GCC v8.3.0}, \textit{Clang
+v7.0.1}, \textit{ICC v19.0.2.187}, tournants sur un \textit{Debian v10 Buster
+(testing)} composé du noyau \textit{Linux v4.19.0 x86\_64}.
 
 \subsubsection{Cache L2}
 
@@ -527,7 +570,7 @@ récentes, et des optimisations mathématiques agressives (\enquote{-Ofast}).
     \centering
     \begin{tabular}{l|l|l}
         \bfseries Compiler & \bfseries Flags & \bfseries Time (s)
-        \csvreader{./L1/compil.txt}{}
+        \csvreader{./L1/P1/compil.txt}{}
         {\\\hline\csvcoli&\csvcolii&\csvcoliii}
     \end{tabular}
     \caption{Benchmarks des compilateurs et flags}
