@@ -46,6 +46,11 @@ function res
 
 # Initialization
 # ==============================================================================
+ 
+# Execute only from directory with .git folder in it.
+echo -n "Checking that this script is executing from the project root directory... "
+ls -alh | grep .git > /dev/null
+echo OK !
 
 # Set the CPU mode into performance (for laptop) and print benchmark informations.
 sudo cpupower frequency-set -g performance
