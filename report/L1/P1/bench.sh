@@ -103,8 +103,9 @@ cflags_ref="-O2 -g"
 # Compiler and flags for optimal compilation (most speed-up).
 cc_opt=`cat $res | sed -e 's/\(.*\),\(.*\),\(.*\)/\3,\1,\2/' | sort -g | cut -d',' -f2 | sed -e '2,$ d'`
 cflags_opt=`cat $res | sed -e 's/\(.*\),\(.*\),\(.*\)/\3,\1,\2/' | sort -g | cut -d',' -f3 | sed -e '2,$ d'`
-# Load the MSR kernel module.
+# Load the MSR kernel module and allow access to hardware counters.
 sudo modprobe msr
+sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
 
 # Benchmark with MAQAO
 # ==============================================================================
@@ -115,7 +116,7 @@ time=`date '+%s'`
 echo -e "\033[1;33mBenchmark with MAQAO and \033[1;31m'$cc_ref $cflags_ref'\033[1;33m :\033[0;37m"
 compil $cc_ref "$cflags_ref"
 echo -e -n "\033[m"
-rm -rf maqao_ref && maqao oneview -xp="$res_dir/maqao_ref" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep"
+rm -rf "$res_dir/maqao_ref" && maqao oneview -xp="$res_dir/maqao_ref" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep"
 echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
 
 # Greatest speed-up benchmark.
@@ -124,7 +125,7 @@ time=`date '+%s'`
 echo -e "\033[1;33mBenchmark with MAQAO and \033[1;31m'$cc_opt $cflags_opt'\033[1;33m :\033[0;37m"
 compil $cc_opt "$cflags_opt" "-funroll-loops"
 echo -e -n "\033[m"
-rm -rf maqao_opt && maqao oneview -xp="$res_dir/maqao_opt" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep" --force-all-loops
+rm -rf "$res_dir/maqao_opt" && maqao oneview -xp="$res_dir/maqao_opt" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep" --force-all-loops
 echo -e "\033[1;33mTime elapsed : \033[1;31m'$((`date '+%s'` - $time))'\033[1;33m seconds\033[0;37m"
 echo "================================================================================"
 
