@@ -16,7 +16,7 @@ krep=100000
 mrep=31
 
 # Result directory.
-res_dir='./report/L1'
+res_dir='./report/L1/P1'
 # Temporary file used to store results.
 tmp='/tmp/bench'
 # Result file.
