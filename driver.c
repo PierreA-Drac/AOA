@@ -12,14 +12,13 @@ extern void baseline(unsigned n, float a[n][n], double b[n]);
 static void init_array_2x (int n, float a[n][n]) {
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
-            a[i][j] = -1.0 + fmodf((float) rand() / (float) rand(), 2.0);
+            a[i][j] = -1.0 + ((float) rand() / (RAND_MAX/2));
 }
 
 static void init_array_1x (int n, double a[n]) {
     for (int i = 0; i < n; i++)
-        a[i] = (double) rand() / RAND_MAX;
+        a[i] = (double) rand() / 42;
 }
-
 
 int main (int argc, char *argv[]) {
     /* Check command line arguments. */
@@ -50,7 +49,7 @@ int main (int argc, char *argv[]) {
         } else {
             baseline (size, a, b);
         }
-
+        
         /* Measure repm repetitions. */
         uint64_t t1 = rdtsc();
         for (i = 0; i < repm; i++)
@@ -59,10 +58,6 @@ int main (int argc, char *argv[]) {
 
         /* Print performance (number of fused-multiply-exponential per cycle). */
         printf ("%.2f\n", (t2 - t1) / ((float) size * size * repm));
-
-        /* Print output. */
-        /* if (m == 0) */
-            /* print_array (size, a); */
 
         /* Free arrays. */
         free (a);
