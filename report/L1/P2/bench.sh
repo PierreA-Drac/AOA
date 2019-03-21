@@ -12,7 +12,7 @@ n=88
 wrep=1000
 # Number of repetition of kernel function for one meta-repetition (about 3s of execution time).
 # krep=100000
-krep=1000
+krep=10000
 # Number of meta-repetition (according to source code, it's a constant).
 mrep=31
 
@@ -26,7 +26,7 @@ cc='gcc'
 cflags='-O2'
 
 # List of optimisations versions to test.
-opts=( 'NOOPT' )
+opts=( 'NOOPT' 'L1_OPT1' 'L1_OPT2' )
 
 # Functions
 # ==============================================================================
@@ -99,7 +99,7 @@ echo -n "" > $res
 
 # Main loop which test all optimisations versions.
 for (( i = 0; i < ${#opts[*]}; i++ )); do
-    bench_cmd ${opts[$i]} $cc "$cflags -g" "RDTSC" 'bench $tmp' 'echo -n "$1,$2,$3," >> $res && res $tmp >> $res'
+    bench_cmd ${opts[$i]} $cc "$cflags" "RDTSC" 'bench $tmp' 'echo -n "$1,$2,$3," >> $res && res $tmp >> $res'
 done
 
 # Benchmark with MAQAO
@@ -109,16 +109,9 @@ for (( i = 0; i < ${#opts[*]}; i++ )); do
     bench_cmd ${opts[$i]} $cc "$cflags -g" "MAQAO" 'rm -rf "$res_dir/maqao_$1" && maqao oneview -xp="$res_dir/maqao_$1" --create-report=one --binary=baseline --run-command="<binary> $n $wrep $krep"'
 done
 
-# Fix the next issue by waiting 5 seconds after MAQAO.
-# ERROR: The selected register PMC0 is in use.
-# Please run likwid with force option (-f, --force) to overwrite settings
-# ERROR: The selected register PMC1 is in use.
-# Please run likwid with force option (-f, --force) to overwrite settings
-sleep 5
-
 # Benchmark with LIKWID
 # ==============================================================================
 
 for (( i = 0; i < ${#opts[*]}; i++ )); do
-    bench_cmd ${opts[$i]} $cc "$cflags" "LIKWID" 'sudo likwid-perfctr -M 0 -C 1 -g L2 -g L2CACHE ./baseline $n $wrep $krep | tee "$res_dir/likwid_$1.txt"'
+    bench_cmd ${opts[$i]} $cc "$cflags" "LIKWID" 'sudo likwid-perfctr -f -M 0 -C 1 -g L2 -g L2CACHE ./baseline $n $wrep $krep | tee "$res_dir/likwid_$1.txt"'
 done
