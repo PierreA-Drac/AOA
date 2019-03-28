@@ -25,7 +25,7 @@ cc='gcc'
 cflags='-O2'
 
 # List of optimisations versions to test.
-opts=( 'NOOPT' 'OPT_STRIDE_1' 'OPT_IF_HOISTING' 'OPT_LOOP_UNROLLING' 'OPT_RESTRICT' 'OPT_EXP')
+opts=( 'NOOPT' 'OPT_LOOP_STRIDE_1' 'OPT_IF_HOISTING' 'OPT_LOOP_UNROLLING' 'OPT_RESTRICT' 'OPT_EXP' 'OPT_ALL' )
 
 # Functions
 # ==============================================================================

@@ -2,7 +2,7 @@
 
 // a[i][j] between -1 and 1.
 
-#ifdef OPT_STRIDE_1
+#ifdef OPT_LOOP_STRIDE_1
 
 /* Make "a" and "b" access stride 1. No speed up and MAQAO detect it to
  * non-stride 1, I don't know why, because it correspond to the example
@@ -42,6 +42,7 @@ void baseline(unsigned n, float a[n][n], double b[n])
 void baseline(unsigned n, float a[n][n], double b[n])
 {
     unsigned i, j;
+    int tail = (n%2 == 1);
     for (j = 0; j < n; j++) {
         for (i = 0; i < n-1; i+=2) {
             if (j == 0) {
@@ -51,12 +52,9 @@ void baseline(unsigned n, float a[n][n], double b[n])
             b[i] *= exp(a[i][j]);
             b[i+1] *= exp(a[i+1][j]);
         }
-    }
-    if (n%2 == 1) {
-        for (j = 0; j < n; j++) {
-            if (j == 0) {
+        if (tail) {
+            if (j == 0)
                 b[n-1] = 1.0;
-            }
             b[n-1] *= exp(a[n-1][j]);
         }
     }
@@ -83,9 +81,10 @@ void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
 #elif OPT_EXP
 
 /* Optimized version of exponential function. Accurate for small x (< 5), and
- * give a high speed-up ! Based on limit expression of exponential function. Can
- * be more optimized with SSE, like in Agner Fog manual. For a next
- * optimization... */
+ * give a high speed-up ! We can use this version with no accuracy problem
+ * because we know that value of a[i][j] are between -1 and 1. This version is
+ * base on limit expression of exponential function. Can be more optimized with
+ * SSE, like in Agner Fog manual. For a next optimization... */
 
 inline static float exp_opt(float x) {
   x = 1.0 + (x / 256.0);
@@ -103,6 +102,35 @@ void baseline(unsigned n, float a[n][n], double b[n])
                 b[i] = 1.0;
             b[i] *= exp_opt(a[i][j]);
         }
+    }
+}
+
+#elif OPT_ALL
+
+/* TODO Can we use float instead of double ? It's reduce memory footprint, and also
+ * calculation time, because for now we mixing float and double in one
+ * computation, which is really bad for performance. */
+
+inline static float exp_opt(float x) {
+  x = 1.0 + (x / 256.0);
+  x *= x; x *= x; x *= x; x *= x;
+  x *= x; x *= x; x *= x; x *= x;
+  return x;
+}
+
+void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
+{
+    unsigned i, j;
+    for (i = 0; i < n; i++)
+        b[i] = exp_opt(a[i][0]);
+    int tail = (n%2 == 1);
+    for (i = 0; i < n; i++) {
+        for (j = 1; j < n-1; j+=2) {
+            b[i] *= exp_opt(a[i][j]);
+            b[i] *= exp_opt(a[i][j+1]);
+        }
+        if (tail)
+            b[i] *= exp_opt(a[i][n-1]);
     }
 }
 
