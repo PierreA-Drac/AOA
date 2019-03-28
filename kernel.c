@@ -80,6 +80,32 @@ void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
     }
 }
 
+#elif OPT_EXP
+
+/* Optimized version of exponential function. Accurate for small x (< 5), and
+ * give a high speed-up ! Based on limit expression of exponential function. Can
+ * be more optimized with SSE, like in Agner Fog manual. For a next
+ * optimization... */
+
+inline static float exp_opt(float x) {
+  x = 1.0 + (x / 256.0);
+  x *= x; x *= x; x *= x; x *= x;
+  x *= x; x *= x; x *= x; x *= x;
+  return x;
+}
+
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (j = 0; j < n; j++) {
+        for (i = 0; i < n; i++) {
+            if (j == 0)
+                b[i] = 1.0;
+            b[i] *= exp_opt(a[i][j]);
+        }
+    }
+}
+
 #elif defined L2_OPT1
 
 #elif defined L3_OPT1
