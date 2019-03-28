@@ -320,32 +320,33 @@ rapide explication de son fonctionnement, le code étant accessible dans le fich
 Les premières lignes du driver servent à récupérer les options de mesures
 passées en argument à l'application. Vint ensuite une boucle qui englobe toute
 l'expérience de mesure, elle correspond à l’exécution des méta-répétitions. Une
-méta-répétition est une répétition qui comprend l'expérience dans sa globalité. L'utilité
-d'avoir plusieurs méta-répétitions vient du fait que plusieurs mesures sont
-nécessaire pour être représentatives, car une mesure isolée pourrait être
+méta-répétition est une répétition qui comprend l'expérience dans sa globalité.
+L'utilité d'avoir plusieurs méta-répétitions vient du fait que plusieurs mesures
+sont nécessaire pour être représentatives, car une mesure isolée pourrait être
 biaisée. On prend la mesure médiane issues des différentes méta-répétitions. Les
-premières lignes de la boucle des méta-répétitions correspondent à l'allocation et
-l'initialisation des tableaux utilisés par le kernel. Il faut faire attention à
-bien utiliser la mémoire lors de l'initialisation, sinon Linux pourrait ne pas
-vraiment allouer le tableau en mémoire (initialisation paresseuse). Ensuite,
-nous entrons dans une petite boucle qui effectue le warmup, c'est-à-dire la mise
-en chauffe du processeur. Derrière cette appellation grossière se cache un
+premières lignes de la boucle des méta-répétitions correspondent à l'allocation
+et l'initialisation des tableaux utilisés par le kernel. Il faut faire attention
+à bien utiliser la mémoire lors de l'initialisation, sinon \textit{Linux}
+pourrait ne pas vraiment allouer le tableau en mémoire (initialisation
+paresseuse). Ensuite, nous entrons dans une petite boucle qui effectue le
+warmup, c'est-à-dire la \enquote{mise en chauffe} (terme vague mais expliquant
+le nom) du processeur. Derrière cette appellation grossière se cache un
 remplissage de la mémoire cache avec nos tableaux, puisque l'on effectue
 plusieurs fois la fonction de calcul \enquote{dans le vide}, sans effectuer de
 mesure. Cette phase de warmup permet de passer le régime transitoire, ou le
 temps de calcul s'améliore à chaque itération, pour arriver dans le régime
 permanent, ou le temps de calcul est stable. Une fois le warmup terminé, on
-passe à la mesure proprement dite, effectué par l'instruction RDTSC. Le choix
-s'est porté sur cette instruction pour son efficacité : en effet, elle appelle
-directement une instruction assembleur x86 correspondante, et son imprécision n'est
-que de quelques dizaines de cycles seulement. Entre nos deux instructions RDTSC
-(start/stop) se trouve une boucle de répétition d'appel du kernel. Cette boucle
-de répétition est nécessaire afin d'avoir une mesure précise : il se trouve que
-si on effectuait un seul appel au kernel, il se pourrait que les instructions de
-mesure (RDTSC) et de contrôle prennent autant ou plus de temps que le code de
-calcul, ce qui biaiserait complètement les résultats. Il faut donc faire
-plusieurs répétitions afin d'avoir un temps de calcul conséquent par rapport au
-reste des instructions.
+passe à la mesure proprement dite, effectué par l'instruction \textit{RDTSC}. Le
+choix s'est porté sur cette instruction pour son efficacité : en effet, elle
+appelle directement une instruction assembleur x86 correspondante, et son
+imprécision n'est que de quelques dizaines de cycles seulement. Entre nos deux
+instructions \textit{RDTSC} (start/stop) se trouve une boucle de répétition
+d'appel du kernel. Cette boucle de répétition est nécessaire afin d'avoir une
+mesure précise : il se trouve que si on effectuait un seul appel au kernel, il
+se pourrait que les instructions de mesure (\textit{RDTSC}) et de contrôle
+prennent autant ou plus de temps que le code de calcul, ce qui biaiserait
+complètement les résultats. Il faut donc faire plusieurs répétitions afin
+d'avoir un temps de calcul conséquent par rapport au reste des instructions.
 
 \subsection{Théorie}
 
@@ -375,13 +376,14 @@ Ci-dessous les paramètres des mesures :
         bonne marge de sécurité.
     \item Nombre de répétitions du warm-up : 1000. Ce nombre est suffisant pour
         avoir ensuite des mesures stables dans tous nos tests car les caches
-        sont remplis avec nos tableaux, choisi par observation.
-    \item Nombre de répétitions des mesures : on choisit un nombre qui nous permet
-        d'avoir à peu près 3 secondes par méta-répétition. Ce nombre varie en
-        fonction de la taille de notre tableau. Avoir quelques secondes de
-        mesures permet d'avoir une faible marge d'erreur de mesures des cycles
-        avec un RDTSC. Par exemple, pour une taille de 89, on peut choisir
-        100000.
+        sont remplis avec nos tableaux, choisi par observation. Il permet donc
+        de passer le régime transitoire.
+    \item Nombre de répétitions des mesures : on choisit un nombre qui nous
+        permet d'avoir un temps minimum représentatif par méta-répétition. Ce
+        nombre varie en fonction de la taille de notre tableau. Avoir plus ou
+        moins 1 seconde de mesures permet d'avoir une faible marge d'erreur de
+        mesures des cycles avec un \textit{RDTSC}. Par exemple, pour une taille
+        de 89, on peut choisir 10000.
 \end{enumerate}
 
 \subsubsection{Cache L2}
