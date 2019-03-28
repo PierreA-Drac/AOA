@@ -8,7 +8,7 @@ CFLAGS+=-O2 -g -Wall
 LFLAGS=-lm
 # Flags for kernel.
 OPTFLAGS=-O2 -Wall
-# Selection of code version. Can be equal to "NOOPT || L1_OPT1 || L1_OPT2 ...".
+# Selection of code version. Can be equal to "NOOPT || OPT_IF_HOISTING ...".
 OPT=NOOPT
 
 all: baseline

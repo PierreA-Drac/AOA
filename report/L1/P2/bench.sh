@@ -11,7 +11,6 @@ n=88
 # Number of repetition for first warm-up.
 wrep=1000
 # Number of repetition of kernel function for one meta-repetition (about 3s of execution time).
-# krep=100000
 krep=10000
 # Number of meta-repetition (according to source code, it's a constant).
 mrep=31
@@ -26,7 +25,7 @@ cc='gcc'
 cflags='-O2'
 
 # List of optimisations versions to test.
-opts=( 'NOOPT' 'L1_OPT1' 'L1_OPT2' )
+opts=( 'NOOPT' 'OPT_STRIDE_1' 'OPT_IF_HOISTING' 'OPT_RESTRICT')
 
 # Functions
 # ==============================================================================
