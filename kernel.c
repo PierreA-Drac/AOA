@@ -22,7 +22,7 @@ void baseline(unsigned n, float a[n][n], double b[n])
 
 #elif OPT_IF_HOISTING
 
-/* Remove the if to have only one path. Very little speed-up. */
+/* Remove the if to have only one path : very little speed-up. */
 
 void baseline(unsigned n, float a[n][n], double b[n])
 {
@@ -32,6 +32,34 @@ void baseline(unsigned n, float a[n][n], double b[n])
     for (j = 1; j < n; j++)
         for (i = 0; i < n; i++)
             b[i] *= exp(a[i][j]);
+}
+
+#elif OPT_LOOP_UNROLLING
+
+/* Unroll the inner loop : little speed-up. Unrolling the outer loop imply a
+ * performance downgrade. */
+
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (j = 0; j < n; j++) {
+        for (i = 0; i < n-1; i+=2) {
+            if (j == 0) {
+                b[i] = 1.0;
+                b[i+1] = 1.0;
+            }
+            b[i] *= exp(a[i][j]);
+            b[i+1] *= exp(a[i+1][j]);
+        }
+    }
+    if (n%2 == 1) {
+        for (j = 0; j < n; j++) {
+            if (j == 0) {
+                b[n-1] = 1.0;
+            }
+            b[n-1] *= exp(a[n-1][j]);
+        }
+    }
 }
 
 #elif OPT_RESTRICT
