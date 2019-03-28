@@ -4,3 +4,5 @@ kernel.o
 rdtsc.o
 tags
 types_c.taghl
+types_fortran.taghl
+types_js.taghl
