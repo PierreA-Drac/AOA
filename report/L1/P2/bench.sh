@@ -22,10 +22,19 @@ tmp='/tmp/bench'
 
 # Compilation configuration.
 cc='gcc'
-cflags='-O2'
+cflags='-O2 -fopenmp'
+
+# Execution configuration.
+launcher_base='taskset -c 1'
+launcher_used=''
 
 # List of optimisations versions to test.
-opts=( 'NOOPT' 'OPT_LOOP_STRIDE_1' 'OPT_IF_HOISTING' 'OPT_LOOP_UNROLLING' 'OPT_RESTRICT' 'OPT_EXP' 'OPT_ALL' )
+opts=(
+    'NOOPT'
+    'OPT_LOOP_STRIDE_1' 'OPT_IF_HOISTING' 'OPT_LOOP_UNROLLING'
+    'OPT_RESTRICT' 'OPT_EXP' 'OPT_OMP'
+    'OPT_BEST_L1'
+    )
 
 # Functions
 # ==============================================================================
@@ -40,7 +49,7 @@ function compil
 # Launch the kernel, display results to stdout and store them in a file.
 function bench
 {
-    taskset -c 1 ./baseline $n $wrep $krep | tee $1
+    $launcher_used ./baseline $n $wrep $krep | tee $1
 }
 
 # Take the median number of the file and display it to stdout.
@@ -98,6 +107,12 @@ echo -n "" > $res
 
 # Main loop which test all optimisations versions.
 for (( i = 0; i < ${#opts[*]}; i++ )); do
+    # Special case to OpenMP benchmark : do not pin to one thread, because we ues all threads.
+    if [[ "${opts[$i]}" == "OPT_OMP" ]]; then
+        launcher_used=''
+    else
+        launcher_used="$launcher_base"
+    fi
     bench_cmd ${opts[$i]} $cc "$cflags" "RDTSC" 'bench $tmp' 'echo -n "$1,$2,$3," >> $res && res $tmp >> $res'
 done
 

@@ -105,7 +105,29 @@ void baseline(unsigned n, float a[n][n], double b[n])
     }
 }
 
-#elif OPT_ALL
+#elif OPT_OMP
+
+/* Parallelize the loop with OpenMP library to use all threads. Negative
+ * speed-up with small data set (L1) due to a lot more control and
+ * synchronizations between threads, but can give a high speed-up for large data
+ * set (L2, L3, RAM). */
+
+#include <omp.h>
+
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (j = 0; j < n; j++) {
+        #pragma omp parallel for
+            for (i = 0; i < n; i++) {
+                if (j == 0)
+                    b[i] = 1.0;
+                b[i] *= exp(a[i][j]);
+            }
+    }
+}
+
+#elif OPT_BEST_L1
 
 /* TODO Can we use float instead of double ? It's reduce memory footprint, and also
  * calculation time, because for now we mixing float and double in one

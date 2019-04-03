@@ -5,7 +5,7 @@
 
 #define NB_METAS 31
 
-extern uint64_t rdtsc ();
+extern uint64_t rdtsc();
 
 extern void baseline(unsigned n, float a[n][n], double b[n]);
 
