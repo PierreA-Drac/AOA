@@ -147,10 +147,6 @@ void baseline(unsigned n, float a[n][n], double b[n])
 
 #elif OPT_BEST_L1
 
-/* TODO Can we use float instead of double ? It's reduce memory footprint, and also
- * calculation time, because for now we mixing float and double in one
- * computation, which is really bad for performance. */
-
 inline static float exp_opt(float x) {
   x = 1.0 + (x / 256.0);
   x *= x; x *= x; x *= x; x *= x;
