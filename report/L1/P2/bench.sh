@@ -32,7 +32,7 @@ launcher_used=''
 opts=(
     'NOOPT'
     'OPT_LOOP_STRIDE_1' 'OPT_IF_HOISTING' 'OPT_LOOP_UNROLLING'
-    'OPT_RESTRICT' 'OPT_EXP' 'OPT_OMP'
+    'OPT_RESTRICT' 'OPT_EXP1' 'OPT_EXP2' 'OPT_OMP'
     'OPT_BEST_L1'
     )
 

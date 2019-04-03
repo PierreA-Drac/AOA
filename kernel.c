@@ -78,13 +78,31 @@ void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
     }
 }
 
-#elif OPT_EXP
+#elif OPT_EXP1
+
+/* Use math.h float version of exponential, instead of double version. Very fast
+ * version instead of double exp(). */
+
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (j = 0; j < n; j++) {
+        for (i = 0; i < n; i++) {
+            if (j == 0)
+                b[i] = 1.0;
+            b[i] *= expf(a[i][j]);
+        }
+    }
+}
+
+#elif OPT_EXP2
 
 /* Optimized version of exponential function. Accurate for small x (< 5), and
- * give a high speed-up ! We can use this version with no accuracy problem
- * because we know that value of a[i][j] are between -1 and 1. This version is
- * base on limit expression of exponential function. Can be more optimized with
- * SSE, like in Agner Fog manual. For a next optimization... */
+ * give a high speed-up used instead of exp() ! We can use this version with no
+ * accuracy problem because we know that value of a[i][j] are between -1 and 1.
+ * This version is base on limit expression of exponential function. The
+ * speed-up is small if we use expf(). Can be more optimized with SSE, like in
+ * Agner Fog manual. For a next optimization... */
 
 inline static float exp_opt(float x) {
   x = 1.0 + (x / 256.0);
