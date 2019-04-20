@@ -1,0 +1,64 @@
+[MAQAO] PROCESS LAUNCHED (host Normandy, process 1255)
+10.78
+11.07
+10.78
+10.88
+10.82
+10.85
+10.86
+10.83
+10.84
+10.84
+10.87
+10.87
+10.87
+10.84
+10.87
+10.88
+10.88
+10.90
+10.88
+10.86
+10.85
+10.91
+10.89
+10.89
+10.89
+10.91
+10.87
+10.90
+10.89
+10.90
+10.89
+[MAQAO] PROCESSING SAMPLES (host Normandy, process 1255)
+[MAQAO] FINISHED PROCESSING SAMPLES (host Normandy, process 1255)
+[MAQAO] STOP PROFILING (host Normandy, process 1255)
+In fct collect_hwc (lua_lprof L8615):
+Info: Copied kernel symbols from /proc/kallsyms
+[MAQAO] ANALYZING EXECUTABLE /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/binary
+[MAQAO] EXECUTABLE /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/binary DONE
+[MAQAO] Your experiment path is /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/lprof_npsu/
+[MAQAO] To display your profiling results:
+####################################################################################
+#     LEVEL    |   REPORT   |                        COMMAND                       #
+####################################################################################
+#  Functions   |  Summary   |  maqao lprof -df xp=/home/pierre/Bureau/AOA/report/  #
+#  Functions   |  Complete  |  maqao lprof -df xp=/home/pierre/Bureau/AOA/report/  #
+#  Loops       |  Summary   |  maqao lprof -dl xp=/home/pierre/Bureau/AOA/report/  #
+#  Loops       |  Complete  |  maqao lprof -dl xp=/home/pierre/Bureau/AOA/report/  #
+#  Fcts+Loops  |  HTML      |  maqao lprof     xp=/home/pierre/Bureau/AOA/report/  #
+####################################################################################
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_loops_summary_xp_lprof_npsu.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_fct_npsu.csv_lprof_cat_summary_lprof_npsu.csv has been generated
+
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_fct_npsu.csv_lprof_functions_summary_xp_lprof_npsu.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_loops_xp_lprof_npsu_H_Normandy_P_1255_T_1255.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_fct_npsu.csv_lprof_cat_summary_lprof_npsu.csv has been generated
+
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_fct_npsu.csv_lprof_functions_xp_lprof_npsu_H_Normandy_P_1255_T_1255.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_cat_summary_lprof_npsu.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_cat_per_node_lprof_npsu.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_cat_per_process_from_node_Normandy_xp_lprof_npsu.csv has been generated
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_cat_per_thread_from_process_1255_from_node_Normandy_xp_lprof_npsu.csv has been generated
+
+Info: The CSV file /home/pierre/Bureau/AOA/report/L1/P2/maqao_OPT_EXP1/shared/lprof_npsu.csv_lprof_functions_summary_xp_lprof_npsu.csv has been generated

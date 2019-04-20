@@ -1,0 +1,9 @@
+0x1550::Insn: PXOR	%XMM0,%XMM0
+0x1554::Insn: ADD	$0x8,%RBX
+0x1558::Insn: CVTSS2SD	(%R15),%XMM0
+0x155d::Insn: CALL	1040 <exp@plt>
+0x1562::Insn: MULSD	-0x8(%RBX),%XMM0
+0x1567::Insn: ADD	%RBP,%R15
+0x156a::Insn: MOVSD	%XMM0,-0x8(%RBX)
+0x156f::Insn: CMP	%R12,%RBX
+0x1572::Insn: JNE	1550 <baseline+0x80>

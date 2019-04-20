@@ -1,0 +1,4 @@
+Loop ID;Module;Function Name;Source Info;Level;Time Average (%);Time Min(s) [TID];Time Max(s) [TID];Time Average(s);
+6;binary;baseline;kernel.c:15-18;Innermost;11.30;2.42 [1071];2.42 [1071];2.42;
+7;binary;baseline;kernel.c:14-18;Outermost;0.09;0.02 [1071];0.02 [1071];0.02;
+1;binary;main;driver.c:57-58;Innermost;0.00;0.00 [1071];0.00 [1071];0.00;

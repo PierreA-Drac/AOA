@@ -1,0 +1,4 @@
+Loop ID;Module;Function Name;Source Info;Level;Time Average (%);Time Min(s) [TID];Time Max(s) [TID];Time Average(s);
+6;binary;baseline._omp_fn.0;kernel.c:141-143;Single;4.47;0.85 [1348];2.51 [1351];1.62;
+7;binary;baseline;kernel.c:138-139;Single;0.02;0.03 [1348];0.03 [1348];0.01;
+3;binary;main;driver.c:14-15;Innermost;0.00;0.00 [1348];0.00 [1348];0.00;

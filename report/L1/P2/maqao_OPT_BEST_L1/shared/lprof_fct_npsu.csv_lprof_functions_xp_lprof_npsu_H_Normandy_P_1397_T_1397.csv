@@ -1,0 +1,10 @@
+Function Name;Module;Source Info;Time %;Time(s);CPI ratio;
+baseline;binary;kernel.c:157;99.92;7.62;0.46;
+unmap_page_range;SYSTEM CALL;;0.01;0.00;0.00;
+random;libc-2.28.so;;0.01;0.00;0.50;
+ktime_get;SYSTEM CALL;;0.01;0.00;0.00;
+random_r;libc-2.28.so;;0.01;0.00;0.33;
+Unknown functions;binary;;0.01;0.00;0.00;
+apic_timer_interrupt;SYSTEM CALL;;0.01;0.00;0.00;
+timekeeping_advance;SYSTEM CALL;;0.01;0.00;0.00;
+run_timer_softirq;SYSTEM CALL;;0.01;0.00;0.00;

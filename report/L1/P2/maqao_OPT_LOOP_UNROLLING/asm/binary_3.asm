@@ -1,0 +1,9 @@
+0x1250::Insn: CALL	10a0 <rand@plt>
+0x1255::Insn: PXOR	%XMM0,%XMM0
+0x1259::Insn: ADD	$0x4,%R13
+0x125d::Insn: CVTSI2SS	%EAX,%XMM0
+0x1261::Insn: MULSS	0xde7(%RIP),%XMM0
+0x1269::Insn: SUBSS	0xde3(%RIP),%XMM0
+0x1271::Insn: MOVSS	%XMM0,-0x4(%R13)
+0x1277::Insn: CMP	%RBX,%R13
+0x127a::Insn: JNE	1250 <main+0x190>
