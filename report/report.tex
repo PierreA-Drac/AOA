@@ -693,14 +693,40 @@ Voir le fichier \enquote{.odt} annexe envoyé par Camille.
 
 TODO 
 
+\subsubsection{Cache L1}
+
+TODO Parler de pourquoi on n'as pas fait le changement de type de données (double par float).
+
 \section{Conclusion}
 
-TODO
+Pour conclure, nous aurons tout de même réussis à apporter des optimisations que
+nous jugeons intéressantes à notre kernel. Au départ, le temps de calcul d'une
+itération de notre boucle (une fonction exponentielle, une multiplication et une
+conversion de type float vers double) était d'environ 23s. Après nos
+optimisations manuelles, une itération du kernel prenait environ 8s, soit
+presque 3 fois plus rapide ! Malheureusement, nous ne sommes pas parvenus à
+atteindre la rapidité de calcul obtenue par les meilleures options du
+compilateur, à savoir 4,5s. Nous pensons qu'avec la vectorisation de notre
+fonction exponentielle et de notre boucle intérieur du kernel, cela aurait pu
+être possible de faire mieux !
+
+Nous aurons été confrontés à de nombreux petits soucis épars pendant notre
+démarche, classique pour des étudiants découvrant les outils de mesures de
+performances, résultants parfois à des problèmes de cohérences entre les
+mesures. Ces problèmes de cohérences pouvaient avoir des explications diverses :
+utilisation du \acs{CPU} par un autre processus, erreurs dans le code, mauvais
+paramétrage de l'outil de mesure... D'où l'importance de la rigueur de mesure
+apprise en TD, détaillée dans le rapport.
+
+Pour conclure, nous pensons que ce projet nous aura apporté une bonne méthode
+d'analyse et d'optimisation, et nous aura permis de mettre en application réelle
+les techniques et sujets vus en cours. Une très bonne première approche !
 
 \newpage
 \section*{Acronymes}
 
 \begin{acronym}
+    \acro{CPU}  {Central Processing Unit}
 \end{acronym}
 
 \end{document}
