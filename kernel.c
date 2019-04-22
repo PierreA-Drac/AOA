@@ -2,6 +2,8 @@
 
 // a[i][j] between -1 and 1.
 
+/* Optimizations for L1 cache. */
+
 #ifdef OPT_LOOP_STRIDE_1
 
 /* Make "a" and "b" access stride 1. No speed up and MAQAO detect it to
@@ -170,6 +172,8 @@ void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
     }
 }
 
+/* Optimizations for L2 cache. */
+
 #elif OPT_LOOP1
 void baseline(unsigned n, float a[n][n], double b[n])
 {
@@ -212,11 +216,9 @@ void baseline(unsigned n, float a[n][n], double b[n])
     }
 }
 
-
-#else
-
 /* Original. */
 
+#else
 
 void baseline(unsigned n, float a[n][n], double b[n])
 {
