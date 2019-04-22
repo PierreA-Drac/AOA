@@ -96,6 +96,28 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.16}
 \usepgfplotslibrary{units}
+% Define style for charts.
+\pgfplotsset{custom plot/.style={
+        width            = 14cm,
+        height           = 9cm,
+        axis lines       = left,
+        grid             = major,
+        grid style       = {dashed},
+        legend pos       = north west,
+        ylabel           = Temps d'exécution,
+        y unit           = \si{\second},
+        enlarge y limits = upper,
+        xlabel           = Optimisation,
+        x unit           = \text{Valeur du define dans kernel.c},
+    }
+}
+\pgfplotsset{custom line/.style={
+        color = red,
+        mark options = {
+            fill = black,
+        }
+    }
+}
 
 % Mathematics
 % -----------------------------------------------------------------------------
@@ -219,7 +241,6 @@ Afin d'étudier les différents niveaux de la hiérarchie mémoire, chaque membr
 groupe analysera un niveau qu'il se verra assigné. Ci-dessous la liste des
 assignations :
 \begin{description}
-
     \item[Pierre] Cache L1 : 
         \begin{itemize}
             \item Intel Core i7-6600U @ 2.8 GHz, Skylake $6^{\text{ème}}$ génération, 14nm, 2 cœurs 4 threads (Hyper-Threading)
@@ -231,8 +252,7 @@ assignations :
         \begin{figure}[!h]
 		\includegraphics[scale=0.42]{figures/L2/L2topo.png}
 		\caption{ }
-		\end{figure}
-        \end{itemize}
+        \end{figure}
     \item[Camille] RAM : 
         \begin{itemize}
             \item Voir le fichier \enquote{.odt} annexe envoyé par Camille.
@@ -627,7 +647,7 @@ l'efficacité d'accès aux données (Array Access Efficiency) a été augmenté 
 imbriquées. Enfin, nous pouvons imaginer une tentative de vectorisation de la
 part du compilateur pour la version optimisée.
 
-\begin{figure}[h]
+\begin{figure}[p]
     \centering
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_ref_global.png}
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_opt_global.png}
@@ -689,18 +709,260 @@ entre l’exécution avec icc et gcc, il est d'environ 37 GBytes avec gcc et
 
 Voir le fichier \enquote{.odt} annexe envoyé par Camille.
 
+\newpage
 \subsection{Phase 2}
 
-TODO 
+La phase 2 constituait en un exercice d'application d'optimisation, en ceci que
+nous avons recommencé à utiliser notre version du programme par défaut
+(\textit{gcc -O2}) pour appliquer des optimisations manuelles au niveau du code
+source. Dans les sections suivantes, nous allons vous présenter, pour chaque
+niveau de mémoire étudiée, les optimisations ayant été faites. Pour des raisons de
+visibilité, le code ne sera pas inclus dans ce rapport : toutes les optimisations
+vont visibles dans le fichier \enquote{kernel.c}.
 
 \subsubsection{Cache L1}
 
-TODO Parler de pourquoi on n'as pas fait le changement de type de données (double par float).
+La Figure~\ref{fig.compare-optims} nous permet de comparer les différents temps
+d'exécution des différentes optimisations. Nous observons d'emblée qu'une
+optimisation nous fait perdre des performances (OPT-OMP), tandis que les autres
+optimisations apportent des améliorations minimes. Enfin, on observe qu'à
+l'optimisation de la fonction exponentielle (OPT-EXP), les gains de performances
+sont très nets. Nous allons détailler les optimisations dans les prochains
+paragraphes. On remarquera qu'il n'y a pas d'analyse des rapports de LIKWID dans
+les sections suivantes : en effet, une fois en L1, la mémoire n'est pas un
+facteur limitant des performances de notre code comparé aux calculs. Par
+conséquent, LIKWID ne nous a pas été utile à ce niveau.
+\begin{figure}[h]
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis} [
+                    custom plot,
+                    title = Mesures effectuées à l'aide de RDTSC,
+                    xtick = data,
+                    symbolic x coords = {
+                        OPT-OMP, OPT-LOOP-STRIDE-1, NOOPT, OPT-RESTRICT,
+                        OPT-IF-HOISTING, OPT-LOOP-UNROLLING, OPT-EXP1, OPT-EXP2,
+                        OPT-BEST-L1, OPT-BEST-L1-2,
+                    },
+                    xticklabel style = {
+                        rotate=50,
+                    },
+                ]
+                \addplot+[custom line] table [
+                    x       = version,
+                    y       = time,
+                    col sep = comma,
+                ] {L1/P2/rdtsc.txt};
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Temps d'exécution en fonction de l'optimisation}
+        \label{fig.compare-optims}
+    \end{center}
+\end{figure}
+
+\paragraph{Accès séquentiel au tableau (OPT-LOOP-STRIDE-1)} MAQAO nous indique,
+dans la Figure~\ref{fig.maqao_noopt_non-unit-stride}, que l'efficacité d'accès
+aux tableaux est mauvais (50\% d'efficacité). En inversant la boucle intérieure
+et extérieure, on améliore l'efficacité à 58\%, comme illustré par la
+Figure~\ref{fig.maqao_noopt_unit-stride}. Si on enlève en plus le \textit{if}
+(une autre optimisation), cette efficacité passe alors à 75\%. Cependant, malgré
+cette meilleure efficacité, le gain de performances est négligeable : l'accès à la
+mémoire n'est pas le facteur limitant de notre kernel.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_non-unit-stride.png}
+    \caption{Rapport de MAQAO sur NOOPT : accès non-stride 1.}
+    \label{fig.maqao_noopt_non-unit-stride}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_unit-stride.png}
+    \caption{Rapport de MAQAO sur OPT\_LOOP\_STRIDE\_1 : augmentation de l'efficacité.}
+    \label{fig.maqao_noopt_unit-stride}
+\end{figure}
+
+\paragraph{Suppression du \textit{if} (OPT-IF-HOISTING)} La
+Figure~\ref{fig.maqao_noopt_if} nous montre que le fait d'avoir deux chemins
+possible dans la boucle limite les performances, de plus MAQAO nous indique un
+\textit{Flow Complexity} de 2. Une fois le \textit{if} isolé dans une boucle
+appart qui se fait avant la boucle principale, nous avons un \textit{Flow
+Complexity} de 1 et plus d'avertissement concernant de multiples chemins à
+l'intérieur de la boucle. On observe un très léger gain au niveau des
+performances, mais encore une fois, deux chemins possibles (empêchant un
+pipelining optimale) n'est pas un facteur très limitant par rapport au reste.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_if.png}
+    \caption{Rapport de MAQAO sur NOOPT : chemins multiples.}
+    \label{fig.maqao_noopt_if}
+\end{figure}
+
+\paragraph{Déroulage de boucle (OPT-LOOP-UNROLLING)}
+MAQAO nous indiquait une possibilité d'unroller notre boucle si notre nombre
+d'itération est significativement plus élevée que le facteur d'unrolling, ce qui
+est le cas ici (Figure~\ref{fig.maqao_noopt_unroll}). Une fois l'unrolling de la
+boucle intérieure effectué avec un facteur de 2, nous observons un très léger
+gain de performances puisque l'on peut commencer à effectuer la prochaine
+itération avant la fin de la première. Encore une fois, le gain n'est pas
+significatif.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_unroll.png}
+    \caption{Rapport de MAQAO sur NOOPT : possiblité d'unrolling.}
+    \label{fig.maqao_noopt_unroll}
+\end{figure}
+
+\paragraph{Pointeurs restreints (OPT-RESTRICT)}
+Nous avons utilisé le mot-clé \textit{restrict} pour indiquer que les pointeurs
+pointait sur des zones de mémoire distinctes et indépendantes entre elles. Cela
+permet notamment au compilateur de plus facilement vectoriser le code et
+ré-arranger l'ordre des instructions, puisqu'il y a moins de
+\enquote{précaution} à prendre. Ici, c'est une optimisation extrêmement légère,
+mais qui peut parfois révéler de bonnes surprises.
+
+\paragraph{Utilisation de l'exponentielle sur un float (OPT-EXP-1)} La
+bibliothèque standard propose plusieurs versions de l'exponentielle, dont une
+pour un double (par défaut) et une pour un float. Celle pour un float est
+naturellement moins précise, mais permet en revanche d'être extrêmement plus
+rapide. En effet, MAQAO nous indiquait que la majorité du temps de notre kernel
+était passé dans la bibliothèque de mathématiques, voir la
+Figure~\ref{fig.maqao_noopt_bottleneck}. En utilisant la fonction exponentielle
+sur un float, on améliore significativement les performances : on obtient un
+speed-up d'environ $2.3$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.25]{./figures/L1/maqao_noopt_bottleneck.png}
+    \caption{Rapport de MAQAO sur NOOPT : fonction exponentielle limitante.}
+    \label{fig.maqao_noopt_bottleneck}
+\end{figure}
+
+\paragraph{Utilisation d'une fonction exponentielle custom (OPT-EXP-2)} Afin
+d'améliorer la rapidité de la fonction exponentielle, nous avons décidé de
+programmer notre propre version. Cette version est précise pour un $x$ faible
+($< 5$), et permet d'obtenir un speed-up considérable par rapport à
+l'exponentielle originale. Par rapport à l'exponentielle sur float, elle
+apporte un petit gain de performances. Nous savons qu'utiliser cette
+approximation n'est pas un problème puisque les valeurs de notre tableau $a$
+sont comprises entre -1 et 1. L'explication de l'optimisation est la suivante.
+La fonction exponentielle est définie par la série entière suivante :
+\begin{equation*}
+    \exp(x) = \sum^{\infty}_{k=0} \frac{x^k}{k!} = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \frac{x^4}{24} + ...
+\end{equation*}
+En appliquant le développement de série entière puis la formule du binôme de
+Newton, on peut exprimer la fonction exponentielle de cette manière :
+\begin{equation*}
+    \exp(x) = \lim_{n \to \infty} \left( 1 + \frac{x}{n} \right)^n
+\end{equation*}
+L'astuce consiste à calculer cette limite pour un petit $n$, tout en gardant une
+bonne approximation : cela permet d'avoir un calcul rapide. Nous avons choisi
+$n = 256$, qui permet d'avoir une bonne approximation pour un $x < 5$, ce qui
+nous convenai. Avec un $n = 256$, il nous suffisait de multiplier la valeur $1
++ x / 256$ par elle-même 8 fois, puisque $x^{256} = x^{2^{128}} =
+x^{2^{2^{64}}} = ...$. Effectuer cette multiplication 8 fois est très rapide et
+ne nécessite pas de boucle. Enfin, nous avons inliner la fonction pour supprimer
+le coût de l'appel.
+
+\paragraph{Parallélisation de la boucle avec OpenMP (OPT-OMP)}
+Notre boucle ne présentant pas de dépendances inter-itérations, il est évident
+d'effectuer une parallélisation. Cependant, n'ayant pas un gros volume de
+données à traiter puisque nous sommes en L1, le surcoût de la parallélisation à
+considérablement ralentit le programme, ce qui était prévisible. OpenMP n'est
+intéressant que pour la parallélisation massive d'un traitement de gros volumes
+de données sur des clusters de calcul, pas pour dispatcher des petits
+traitements sur un petit processeur d'ordinateur de bureau ne possédant que 4
+cœurs software.
+
+\paragraph{Conversion de type} Comme exposé dans la
+Figure~\ref{fig.maqao_noopt_complex_instr}, MAQAO nous informe qu'une
+instruction complexe est exécuté une fois dans notre boucle, ce qui réduit les
+performances. Cette instruction, \textit{CVTSS2SD}, convertit un \textit{float}
+vers un \textit{double} au moment de stocker le résultat de l'exponentielle.
+N'utiliser que des \textit{doubles} n'apportait pas de performances, car
+l'exponentielle sur un \textit{double} est plus longue qu'une exponentielle sur
+un \textit{float}. Enfin, n'utiliser que des \textit{floats} apportait un léger
+gain de performances, mais entraînait une perte de précision sur les très
+petites valeurs stockées dans \textit{b}. Par conséquent, nous avons délibérément
+choisis de ne pas appliquer cette optimisation.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_complex_instr.png}
+    \caption{Rapport de MAQAO sur NOOPT : instruction complexe détectée.}
+    \label{fig.maqao_noopt_complex_instr}
+\end{figure}
+
+\paragraph{Toutes les optimisations (OPT-BEST-L1)} Toutes les optimisations
+(sauf la conversion de type et la parallélisation, n'apportant aucun gain) ont
+été réunies dans un seul code. Aucune modification supplémentaire n'as été
+apporté par rapport aux optimisations décrites au-dessus. On observe au final
+un gain non-négligeable par rapport à la version originale (speed-up de 2.9).
+
+\paragraph{Toutes les optimisations avec flags (OPT-BEST-L1-2)} Ce benchmark
+correspond à la version du code étant la mieux optimisée, mais mesurée avec les
+options de compilation donnant le meilleur résultat dans la phase 1. On observe
+qu'on retrouve un léger gain par rapport à cette version du code sans ces
+options de compilation (paragraphe précédent), mais qu'elle est moins rapide que
+la version générée dans la phase 1, sans modification du code : en effet, on
+obtient 7.5 cycles par itération sur cette version modifiée, contrairement à 4.5
+cycles par itération sur la version originale. On en conclue que sur ce code, le
+compilateur aura fait mieux que nous. La différence de performance s'explique
+par le fait que nous n'avons pas tiré partit de la vectorisation, et que nous
+forçons le compilateur à utiliser notre approximation de l'exponentielle. En
+revanche, en lui laissant le libre arbitre, il a pu utiliser (dans la version
+originale du code) une version vectorisée de l'exponentielle, ce qui fait toute
+la différence ! Cette différence n'est pas visible dans le code assembleur pour
+la fonction exponentielle car c'est un appel de fonction, elle n'a pas été
+inlineé (\textit{call exp\_finite}). Cependant, MAQAO détecte très bien la
+différence de vectorisation, comme illustré sur la
+Figure~\ref{fig.maqao_noopt_vec} qui nous montre le degré de vectorisation du
+code originale avec les bonnes options de compilation et la
+Figure~\ref{fig.maqao_bestl1_vec} qui nous montre le degré de vectorisation du
+code optimisé. En effet, on voit que dans notre code, nous pourrions obtenir un
+gain considérable en vectorisant notre fonction exponentielle et notre boucle :
+ici se trouve le goulet d'étranglement de notre programme.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[scale=0.6]{figures/L1/maqao_noopt_flags.png}
+    \includegraphics[scale=0.45]{figures/L1/maqao_noopt_flags_vec.png}
+    \caption{Rapport de MAQAO sur NOOPT : vectorisation avec les bons flags}
+    \label{fig.maqao_noopt_vec}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.6]{figures/L1/maqao_bestl1_wflags.png}
+    \includegraphics[scale=0.45]{figures/L1/maqao_bestl1_wflags_vec.png}
+    \caption{Rapport de MAQAO sur BEST-L1 : vectorisation}
+    \label{fig.maqao_bestl1_vec}
+\end{figure}
+
+\paragraph{Vectorisation} Comme identifier dans les paragraphes précédents, pour
+obtenir un gros speed-up, il nous fallait vectoriser notre code. Nous avons
+alors commencer à tenter une vectorisation en utilisant des \textit{intrinsics}.
+Nous avons aussi analysé la version d'exponentielle vectorisée d'Agner Fog dans
+son manuel d'optimisation. Cependant, nous n'avons pas réussis à venir à terme
+de notre code : entre les \textit{intrinsics} de GCC et d'ICC, entre les
+différents jeux d'instructions SIMD (SEE/2/3/4/4, AVX/512), entre les codes
+pour le C et ceux pour le C++, et enfin entre les versions customs de fonction
+vectorisée ou l'utilisation de bibliothèques mathématiques vectorisées (VML, IPP,
+Sleef, SVML, VCL...), nous nous sommes un peu perdus. Je pense que nous aurions
+dû commencer par vectoriser un code plus simple pour nous entraîner, peut-être
+directement en assembleur pour avoir une compréhension maximale. Quoi qu'il en
+soit, à cette heure, nous n'avons plus le temps de retenter l'expérience : mais
+nous savons comment nous lancer et quel chemin suivre pour obtenir un speed-up
+maximal.
 
 \subsubsection{Cache L2}
 
 \subsubsection{RAM}
 
+\newpage
 \section{Conclusion}
 
 Pour conclure, nous aurons tout de même réussis à apporter des optimisations que
@@ -717,20 +979,12 @@ Nous aurons été confrontés à de nombreux petits soucis épars pendant notre
 démarche, classique pour des étudiants découvrant les outils de mesures de
 performances, résultants parfois à des problèmes de cohérences entre les
 mesures. Ces problèmes de cohérences pouvaient avoir des explications diverses :
-utilisation du \acs{CPU} par un autre processus, erreurs dans le code, mauvais
+utilisation du CPU par un autre processus, erreurs dans le code, mauvais
 paramétrage de l'outil de mesure... D'où l'importance de la rigueur de mesure
 apprise en TD, détaillée dans le rapport.
 
 Pour conclure, nous pensons que ce projet nous aura apporté une bonne méthode
 d'analyse et d'optimisation, et nous aura permis de mettre en application réelle
 les techniques et sujets vus en cours. Une très bonne première approche !
-
-
-\newpage
-\section*{Acronymes}
-
-\begin{acronym}
-    \acro{CPU}  {Central Processing Unit}
-\end{acronym}
 
 \end{document}

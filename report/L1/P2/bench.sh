@@ -103,7 +103,7 @@ echo -e "\033[33mNumber of meta-repetition of program :\033[m $mrep times"
 res="$res_dir/rdtsc.txt"
 
 # Reset res file.
-echo -n "" > $res
+echo "version,compiler,flags,time" > $res
 
 # Main loop which test all optimisations versions.
 for (( i = 0; i < ${#opts[*]}; i++ )); do
