@@ -287,7 +287,7 @@ Listing~\ref{lst.baseline.noopt.prot} Nous voyons qu’il y a 3 variables qui so
         en fonction de $n$ : $8n$ Bytes.
 \end{itemize}
 
-\begin{listing}[h]
+\begin{listing}[ht]
     \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{C}
 void baseline(unsigned n, float a[n][n], double b[n])
     \end{minted}
@@ -303,7 +303,7 @@ alors : les boucles impliquent qu'il faut prêter attention au sens de parcours
 des tableaux, le branchement nous laisse penser qu'il faudrait essayer de le
 supprimer, enfin l'exponentiel et la multiplication sont des opérations lourdes.
 
-\begin{listing}[h]
+\begin{listing}[ht]
     \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{C}
 for (j = 0; j < n; j++) {
     for (i = 0; i < n; i++) {
@@ -488,7 +488,8 @@ d'energie. Il faut ensuite ffixer la fréquence à l'aide de \textit{cpupower
 frequency-set} et enfin lorsque l'on compile le programme il faut aussi fixer
 le coeur afin d'éviter que le programme s'execute sur plusieurs et qu'il 
 faille transferer des données entre les différents coeurs ce qui ferrait 
-perdre du temps. Pour fixer le coeur on utilise taskset.
+perdre du temps. Pour fixer le coeur on utilise taskset. Vous pourrez retrouver
+un exemple les commandes utilisées dans le script \textit{L2script.sh}.
 
 Pour vérifier le calcul théorique de la taille des données j'ai utilisé
 likwid-perftcr afin de voir si les données transitaient bien par le cache L2.
@@ -598,7 +599,7 @@ redoutable de la génération de code spécialement pour l'architecture hôte
 (\enquote{-march=native}), permettant d'utiliser les instructions x86 les plus
 récentes, et des optimisations mathématiques agressives (\enquote{-Ofast}).
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{l|l|l}
         \bfseries Compiler & \bfseries Flags & \bfseries Time (s)
@@ -624,7 +625,7 @@ important que la version de référence d'éviction de données du cache L1 (2.0
 vs. 16.140.154), ainsi qu'un ratio de miss bien plus faible dans le cache L2
 (0.0001 vs. 0.0259).
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.45]{./figures/L1/likwid_noopt.png}
     \caption{A gauche, la version de référence. A droite, la version avec les
@@ -665,7 +666,7 @@ temps. Nous pouvons voir que le linkage de la bibliothèque mathématique
 Enfin, nous observons que notre unique boucle à bien été déroulée car nous
 trouvons l'ajout d'une \textit{tail loop}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_ref_func.png}
     \includegraphics[scale=0.5]{./figures/L1/maqao_noopt_opt_func.png}
@@ -676,7 +677,7 @@ trouvons l'ajout d'une \textit{tail loop}.
 
 \subsubsection{Cache L2}
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -732,7 +733,7 @@ paragraphes. On remarquera qu'il n'y a pas d'analyse des rapports de LIKWID dans
 les sections suivantes : en effet, une fois en L1, la mémoire n'est pas un
 facteur limitant des performances de notre code comparé aux calculs. Par
 conséquent, LIKWID ne nous a pas été utile à ce niveau.
-\begin{figure}[h]
+\begin{figure}[ht]
     \begin{center}
         \begin{tikzpicture}
             \begin{axis} [
@@ -769,14 +770,14 @@ Figure~\ref{fig.maqao_noopt_unit-stride}. Si on enlève en plus le \textit{if}
 cette meilleure efficacité, le gain de performances est négligeable : l'accès à la
 mémoire n'est pas le facteur limitant de notre kernel.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_non-unit-stride.png}
     \caption{Rapport de MAQAO sur NOOPT : accès non-stride 1.}
     \label{fig.maqao_noopt_non-unit-stride}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_unit-stride.png}
     \caption{Rapport de MAQAO sur OPT\_LOOP\_STRIDE\_1 : augmentation de l'efficacité.}
@@ -793,7 +794,7 @@ l'intérieur de la boucle. On observe un très léger gain au niveau des
 performances, mais encore une fois, deux chemins possibles (empêchant un
 pipelining optimale) n'est pas un facteur très limitant par rapport au reste.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_if.png}
     \caption{Rapport de MAQAO sur NOOPT : chemins multiples.}
@@ -809,7 +810,7 @@ gain de performances puisque l'on peut commencer à effectuer la prochaine
 itération avant la fin de la première. Encore une fois, le gain n'est pas
 significatif.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_unroll.png}
     \caption{Rapport de MAQAO sur NOOPT : possiblité d'unrolling.}
@@ -834,7 +835,7 @@ Figure~\ref{fig.maqao_noopt_bottleneck}. En utilisant la fonction exponentielle
 sur un float, on améliore significativement les performances : on obtient un
 speed-up d'environ $2.3$.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.25]{./figures/L1/maqao_noopt_bottleneck.png}
     \caption{Rapport de MAQAO sur NOOPT : fonction exponentielle limitante.}
@@ -889,7 +890,7 @@ gain de performances, mais entraînait une perte de précision sur les très
 petites valeurs stockées dans \textit{b}. Par conséquent, nous avons délibérément
 choisis de ne pas appliquer cette optimisation.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.4]{./figures/L1/maqao_noopt_complex_instr.png}
     \caption{Rapport de MAQAO sur NOOPT : instruction complexe détectée.}
@@ -934,7 +935,7 @@ ici se trouve le goulet d'étranglement de notre programme.
     \label{fig.maqao_noopt_vec}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[scale=0.6]{figures/L1/maqao_bestl1_wflags.png}
     \includegraphics[scale=0.45]{figures/L1/maqao_bestl1_wflags_vec.png}
@@ -959,6 +960,83 @@ nous savons comment nous lancer et quel chemin suivre pour obtenir un speed-up
 maximal.
 
 \subsubsection{Cache L2}
+
+Dans la phase 2, il nous a été demandé de repartir de l'optimisation de base de
+gcc -O2 les résultats obtenus avec maqao sont les suivants : 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{figures/L2/L2T1.png}
+    \caption{Option de base L2}
+\end{figure}
+
+Pour les deux premières optimisations à faire, il faut simplement ajouter 
+des options lors de la compilation. Ces options sont de passer de -O2 à 
+-O3 et d'ajouter -funroll-loops. On obtient alors les données suivantes : 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{figures/L2/L2T3.png}
+    \caption{Troisième test L2}
+\end{figure}
+
+Une fois ces options ajoutées on remarque que l'on ne peut plus rien faire
+au niveau de la compilation. Il faut alors comprendre les autres données 
+fournies par maqao et essayer de modifier le code source pour résoudre les 
+endroits qui prennent le plus de temps.
+Lors de l'ajout de la deuxième option de compilation le temps dans les 
+boucles et réduit et on peut remarquer que ce qui prend le plus de temps 
+est le de faire les calculs. On remarque aussi que le pourcentage de miss 
+lorsque l'on veut accéder au tableau est grand il est de plus de 30\%. 
+C'est donc par cela que j'ai commencé. J'ai remarqué que pour parcourir le 
+tableau, on regardait chaque case d'une colonne et non pas d'une ligne 
+alors que le langage C stocke, en mémoire, les cases tableaux de façon à 
+ce que les colonnes d'une même ligne soient contiguës. C'est pour cela 
+que j'ai inversé les deux boucles. Ce changement permet d'avoir plus de 85\%
+de réussite lorsque l'on cherche à accéder à la mémoire.
+
+\begin{figure}[ht]
+    \includegraphics[scale=0.6]{figures/L2/L2T4.png}
+    \caption{Quatrième test L2 }
+\end{figure}
+
+Néanmoins à cause de ce changement on voit que le \textit{Flow Complexity} 
+a beaucoup augmenté et que c'est maintenant un point chaud. On peut résoudre 
+ce problème en séparant la boucle for externe afin de sortir le if de la 
+boucle interne. Cela marche très bien car le \textit{Flow Complexity} 
+repasse à un, le \textit{FP Vectorised} passe de 2 à 1 et cela augmente 
+encore un peu le pourcentage de réussite des accès mémoires des tableaux.
+
+\begin{figure}[ht]
+    \includegraphics[scale=0.6]{figures/L2/L2T5.png}
+    \caption{Cinquième test L2}
+\end{figure}
+
+Il reste maintenant à réduire le temps passé à faire des calculs pour cela 
+on peut essayer d'utiliser la fonction exponentielle flottante de la librairie
+math.h. Cela a un grand impacte que ce soit sur le temps d'utilisation 
+du cpu mais aussi sur le temps d'exécution. On passe d'environ 8s à 2s, de 
+96\% d'utilisation pour les maths à 66\% et d'environ 35 cycles par opération à 10.
+
+\begin{figure}[ht]
+    \includegraphics[scale=0.6]{figures/L2/L2CamT5.png}
+    \caption{Diagramme Cinquième test L2}
+\end{figure}
+
+\begin{figure}[ht]
+    \includegraphics[scale=0.6]{figures/L2/L2CamT6.png}
+    \caption{Diagramme Sixième test L2}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.6]{figures/L2/L2DiagResult.png}
+    \caption{Istogramme des résultats L2}
+\end{figure}
+
+
+On pourrait maintenant essayer d'utiliser OpenMP pour rendre encore plus rapide 
+le programme.
 
 \subsubsection{RAM}
 

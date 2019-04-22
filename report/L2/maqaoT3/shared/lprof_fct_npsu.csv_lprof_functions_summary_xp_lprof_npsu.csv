@@ -1,0 +1,10 @@
+Function Name;Module;Source Info;Time Average (%);Time Min(s) [TID];Time Max(s) [TID];Time Average(s);
+__ieee754_exp_fma;libm-2.27.so;;80.52;6.78 [1162];6.78 [1162];6.78;
+exp;libm-2.27.so;;8.55;0.72 [1162];0.72 [1162];0.72;
+baseline;binary;kernel.c:224;3.33;0.28 [1162];0.28 [1162];0.28;
+__truncf_c;libm-2.27.so;;2.38;0.20 [1162];0.20 [1162];0.20;
+@plt_start@;binary;;1.66;0.14 [1162];0.14 [1162];0.14;
+lgamma;libm-2.27.so;;1.66;0.14 [1162];0.14 [1162];0.14;
+@plt;libm-2.27.so;;1.43;0.12 [1162];0.12 [1162];0.12;
+hrtimer_interrupt;SYSTEM CALL;;0.24;0.02 [1162];0.02 [1162];0.02;
+run_timer_softirq;SYSTEM CALL;;0.24;0.02 [1162];0.02 [1162];0.02;

@@ -1,0 +1,4 @@
+Function Name;Module;Source Info;Time %;Time(s);CPI ratio;
+__expf_fma;libm-2.27.so;;56.30;1.34;0.29;
+baseline;binary;kernel6.c:6;34.45;0.82;0.27;
+__exp2f_fma;libm-2.27.so;;9.24;0.22;0.36;

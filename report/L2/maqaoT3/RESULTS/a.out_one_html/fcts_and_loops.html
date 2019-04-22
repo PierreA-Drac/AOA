@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en-US"><head><title>ONEVIEW: report one</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="css/themes/redmond_custom/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="css/themes/redmond_custom/jquery.jqplot.min.css" />
+<link rel="stylesheet" type="text/css" href="css/maqao_modal.css" />
+<link rel="stylesheet" type="text/css" href="css/global.css" />
+<link rel="stylesheet" type="text/css" href="css/maqao_menu.css" />
+<script src="js/jquery-1.9.0.min.js" ></script>
+<script src="js/jquery-ui-1.10.3.custom.min.js" ></script>
+<script src="js/grid.locale-en.js" ></script>
+<script src="js/jquery.jqGrid.min.js" ></script>
+<script src="js/d3.min.js" ></script>
+<script class="include" src="js/jquery.jqplot.min.js"></script>
+<script class="include" src="js/jqplot.pieRenderer.min.js"></script>
+<script class="include" src="js/jqplot.barRenderer.min.js"></script>
+<script class="include" src="js/jqplot.categoryAxisRenderer.min.js"></script>
+<script class="include" src="js/jqplot.pointLabels.min.js"></script>
+<script class="include" src="js/jqplot.cursor.min.js"></script>
+<script class="include" src="js/jqplot.canvasTextRenderer.min.js"></script>
+<script class="include" src="js/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script class="include" src="js/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script class="include" src="js/jqplot.enhancedLegendRenderer.min.js"></script>
+<script class="include" src="js/jqplot.highlighter.min.js"></script>
+<script class="include" src="js/maqao_menu.js"></script>
+<script>
+$( function() {
+  $( document ).tooltip({
+    content: function() {
+      if ($(this).hasClass ("tooltip-maqao")
+      ||  $(this).hasClass ("tooltip-maqao-button")) {
+        return $(this).attr('title');
+      }
+    },
+    position: {
+      my: "center bottom-20",
+        at: "center top",
+        using: function( position, feedback ) {
+          $( this ).css( position );
+          $( "<div>" )
+            .addClass( "arrow-tt" )
+            .addClass( feedback.vertical )
+            .addClass( feedback.horizontal )
+            .appendTo( this );
+        }
+      }
+  });
+} );
+
+// Code from https://www.htmlgoodies.com/beyond/javascript/article.php/3724571/Using-Multiple-JavaScript-Onload-Functions.htm
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+</script>
+</head><body>
+<div id="page_title"><img alt="MAQAO" id="maqao_logo" src="images/MAQAO_small_logo.png" /><ul id="maqao_menu"><li><a  href="index.html">Global</a></li><li><a  href="application.html">Application</a></li><li><a class="_current_page" href="fcts_and_loops.html">Functions</a></li><li><a  href="loops_index.html">Loops</a></li><li><a  href="topology.html">Topology</a></li></ul></div>
+<div id="anchor_file_start"></div>
+<div id="maqao_content">
+<div id="spacer_page_title" style="height:100px;" ></div>
+<div class="_fixed_box" ><h3 class="_header">Functions and Loops<span class="tooltip-maqao-button help-maqao" title="Profiling of the application. Functions can be expanded / collapsed to display / hide their profiled loops by clicking on the arrow on the left of a row or on the '-' / '+' of the right. If a loop has a circle instead of an arrow, it means it is an innermost loop. By right-clicking on a function / loop, a menu appears, allowing to display some charts about the load distribution:<br><ul><li><b>Load Distribution</b> displays a chart presenting the load distribution between threads where only threads that execute the area (loop or function) are represented;</li><li><b>Sorted Load Distribution</b> displays a chart presenting the load distribution between threads where threads have been sorted from the most time consuming to the lowest;</li><li><b>Load Distribution All threads</b> displays a chart presenting the load distribution between threads where all thread are represented, even ones which do not execute the area (loop or function);</li></ul>By double-clicking on a function / loop, a new tab is opened to display the report of the corresponding object."></span></h3>
+<div class="_content"><div class="_accordion_box collapsed"><h3 id="_accordion_header_1" class="_header collapsed" onclick="_click_accordion_header(this)" ><span class="_accordion_box_button">&#x25B6;</span>Filters<span class="tooltip-maqao-button help-maqao" title="A form that can be displayed / hidden by clicking on the header to specify which modules must be displayed in the profiling. By clicking on the button, only checked categories are displayed. Coverages are computed according displayed modules."></span></h3><div id="_accordion_content_1" class="_content collapsed"><form><u>Modules:</u><br style="margin-bottom:10px;">
+<input id="_input_check_all_mods" type="checkbox" style="vertical-align: middle;" onchange="_onchange_modules (this)" checked ><span id="_input_check_all_mods_text">Uncheck all modules</span><br>
+<input id="_input_check_mod_libm-2.27.so" type="checkbox" style="margin-left: 30px;  vertical-align: middle;" checked >libm-2.27.so - 94.54 %<br>
+<input id="_input_check_mod_a.out" type="checkbox" style="margin-left: 30px;  vertical-align: middle;" checked >a.out - 4.99 %<br>
+<input id="_input_check_mod_SYSTEM_CALL" type="checkbox" style="margin-left: 30px;  vertical-align: middle;" checked >SYSTEM CALL - 0.48 %<br>
+</form><hr><button type="button" onclick="_upd_table();">Filter Results</button>
+</div></div><div class="_div_table"><table id="_treed_table_3" class="_treed_table"><tr><th class=" _left tooltip-maqao" title="Name of the function / loop identifier">Name</th><th class=" tooltip-maqao" title="Name of the module (binary file) that contains the function / loop">Module</th><th class=" tooltip-maqao" title="Percentage of the execution time spent in the function / loop">Coverage (%)</th><th class=" tooltip-maqao" title="Execution time spent in the function / loop in seconds">Time (s)</th><th class=" tooltip-maqao" title="Number of threads that executed the function / objects">Nb Threads</th><th class=" tooltip-maqao" title="Deviation of the coverage amongs threads">Deviation (coverage)</th></tr>
+<tr id="_tr_3_1"  ondblclick="_action_5(this,1,-1, '__ieee754_exp_fma - libm-2.27.so');" ><td id="_tr_3_1-1"  data-_i="1" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>__ieee754_exp_fma</td><td id="_tr_3_1-2"  data-_i="1" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >libm-2.27.so</td><td id="_tr_3_1-3"  data-_i="1" data-_j="3"  class=" _centered"  style="width:8%;" >80.52</td><td id="_tr_3_1-4"  data-_i="1" data-_j="4"  class=" _centered"  style="width:8%;" >6.78</td><td id="_tr_3_1-5"  data-_i="1" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_1-6"  data-_i="1" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_2"  ondblclick="_action_5(this,2,-1, 'exp - libm-2.27.so');" ><td id="_tr_3_2-1"  data-_i="2" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>exp</td><td id="_tr_3_2-2"  data-_i="2" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >libm-2.27.so</td><td id="_tr_3_2-3"  data-_i="2" data-_j="3"  class=" _centered"  style="width:8%;" >8.55</td><td id="_tr_3_2-4"  data-_i="2" data-_j="4"  class=" _centered"  style="width:8%;" >0.72</td><td id="_tr_3_2-5"  data-_i="2" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_2-6"  data-_i="2" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_3"  ondblclick="_action_6(this,3,-1, 'functions/binary_3.html');" ><td id="_tr_3_3-1"  data-_i="3" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span onclick="_click_treed(this)" style="margin-right:5px;margin-left:0px;" >&#x25BA;</span>baseline<span onclick="_click_expand(this)" class="span_expand">&#43;</span></td><td id="_tr_3_3-2"  data-_i="3" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >a.out</td><td id="_tr_3_3-3"  data-_i="3" data-_j="3"  class=" _centered"  style="width:8%;" >3.33</td><td id="_tr_3_3-4"  data-_i="3" data-_j="4"  class=" _centered"  style="width:8%;" >0.28</td><td id="_tr_3_3-5"  data-_i="3" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_3-6"  data-_i="3" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr class="_treed_hidden _tr_3_3"  id="_tr_3_3_1"  oncontextmenu="_action_15(this,4,-1, 'nil');"  ondblclick="_action_4(this,4,-1, 'Loop 7 - kernel.c:222-232 - a.out');" ><td id="_tr_3_3_1-1"  data-_i="4" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span onclick="_click_treed(this)" style="margin-right:5px;margin-left:15px;" >&#x25BA;</span>Loop 7 - kernel.c:222-232 - a.out<span onclick="_click_expand(this)" class="span_expand">&#43;</span></td><td id="_tr_3_3_1-2"  data-_i="4" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" ></td><td id="_tr_3_3_1-3"  data-_i="4" data-_j="3"  class=" _centered"  style="width:8%;" >3.33</td><td id="_tr_3_3_1-4"  data-_i="4" data-_j="4"  class=" _centered"  style="width:8%;" >0.28</td><td id="_tr_3_3_1-5"  data-_i="4" data-_j="5"  class=" _centered"  style="width:8%;" ></td><td id="_tr_3_3_1-6"  data-_i="4" data-_j="6"  class=" _centered"  style="width:8%;" ></td></tr>
+<tr class="_treed_hidden _tr_3_3_1"  id="_tr_3_3_1_1"  ondblclick="_action_6(this,5,-1, 'loops/binary_8.html');" ><td id="_tr_3_3_1_1-1"  data-_i="5" data-_j="1"  data-_p="b_charts/binary_8" class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:33px;" >&#x25CB;</span>Loop 8 - kernel.c:225-229 - a.out</td><td id="_tr_3_3_1_1-2"  data-_i="5" data-_j="2"  data-_p="b_charts/binary_8" class=" _centered"  style="width:14%;word-break:break-all;" ></td><td id="_tr_3_3_1_1-3"  data-_i="5" data-_j="3"  data-_p="b_charts/binary_8" class=" _centered"  style="width:8%;" >3.33</td><td id="_tr_3_3_1_1-4"  data-_i="5" data-_j="4"  data-_p="b_charts/binary_8" class=" _centered"  style="width:8%;" >0.28</td><td id="_tr_3_3_1_1-5"  data-_i="5" data-_j="5"  data-_p="b_charts/binary_8" class=" _centered"  style="width:8%;" ></td><td id="_tr_3_3_1_1-6"  data-_i="5" data-_j="6"  data-_p="b_charts/binary_8" class=" _centered"  style="width:8%;" ></td></tr>
+<tr class="_treed_hidden _tr_3_3_1"  id="_tr_3_3_1_2"  oncontextmenu="_action_15(this,6,-1, 'nil');"  ondblclick="_action_4(this,6,-1, 'Loop 6 - kernel.c:225-229 - a.out');" ><td id="_tr_3_3_1_2-1"  data-_i="6" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:33px;" >&#x25CB;</span>Loop 6 - kernel.c:225-229 - a.out</td><td id="_tr_3_3_1_2-2"  data-_i="6" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" ></td><td id="_tr_3_3_1_2-3"  data-_i="6" data-_j="3"  class=" _centered"  style="width:8%;" >0</td><td id="_tr_3_3_1_2-4"  data-_i="6" data-_j="4"  class=" _centered"  style="width:8%;" >0</td><td id="_tr_3_3_1_2-5"  data-_i="6" data-_j="5"  class=" _centered"  style="width:8%;" ></td><td id="_tr_3_3_1_2-6"  data-_i="6" data-_j="6"  class=" _centered"  style="width:8%;" ></td></tr>
+<tr id="_tr_3_4"  ondblclick="_action_5(this,7,-1, '__truncf_c - libm-2.27.so');" ><td id="_tr_3_4-1"  data-_i="7" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>__truncf_c</td><td id="_tr_3_4-2"  data-_i="7" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >libm-2.27.so</td><td id="_tr_3_4-3"  data-_i="7" data-_j="3"  class=" _centered"  style="width:8%;" >2.38</td><td id="_tr_3_4-4"  data-_i="7" data-_j="4"  class=" _centered"  style="width:8%;" >0.2</td><td id="_tr_3_4-5"  data-_i="7" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_4-6"  data-_i="7" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_5"  ondblclick="_action_6(this,8,-1, 'functions/binary_5.html');" ><td id="_tr_3_5-1"  data-_i="8" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>@plt_start@</td><td id="_tr_3_5-2"  data-_i="8" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >a.out</td><td id="_tr_3_5-3"  data-_i="8" data-_j="3"  class=" _centered"  style="width:8%;" >1.66</td><td id="_tr_3_5-4"  data-_i="8" data-_j="4"  class=" _centered"  style="width:8%;" >0.14</td><td id="_tr_3_5-5"  data-_i="8" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_5-6"  data-_i="8" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_6"  ondblclick="_action_5(this,9,-1, 'lgamma - libm-2.27.so');" ><td id="_tr_3_6-1"  data-_i="9" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>lgamma</td><td id="_tr_3_6-2"  data-_i="9" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >libm-2.27.so</td><td id="_tr_3_6-3"  data-_i="9" data-_j="3"  class=" _centered"  style="width:8%;" >1.66</td><td id="_tr_3_6-4"  data-_i="9" data-_j="4"  class=" _centered"  style="width:8%;" >0.14</td><td id="_tr_3_6-5"  data-_i="9" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_6-6"  data-_i="9" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_7"  ondblclick="_action_5(this,10,-1, '@plt - libm-2.27.so');" ><td id="_tr_3_7-1"  data-_i="10" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>@plt</td><td id="_tr_3_7-2"  data-_i="10" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >libm-2.27.so</td><td id="_tr_3_7-3"  data-_i="10" data-_j="3"  class=" _centered"  style="width:8%;" >1.43</td><td id="_tr_3_7-4"  data-_i="10" data-_j="4"  class=" _centered"  style="width:8%;" >0.12</td><td id="_tr_3_7-5"  data-_i="10" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_7-6"  data-_i="10" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_8"  ondblclick="_action_5(this,11,-1, 'hrtimer_interrupt - SYSTEM CALL');" ><td id="_tr_3_8-1"  data-_i="11" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>hrtimer_interrupt</td><td id="_tr_3_8-2"  data-_i="11" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >SYSTEM CALL</td><td id="_tr_3_8-3"  data-_i="11" data-_j="3"  class=" _centered"  style="width:8%;" >0.24</td><td id="_tr_3_8-4"  data-_i="11" data-_j="4"  class=" _centered"  style="width:8%;" >0.02</td><td id="_tr_3_8-5"  data-_i="11" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_8-6"  data-_i="11" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+<tr id="_tr_3_9"  ondblclick="_action_5(this,12,-1, 'run_timer_softirq - SYSTEM CALL');" ><td id="_tr_3_9-1"  data-_i="12" data-_j="1"  class=" _left"  style="width:54%;word-break:break-all;" ><span style="margin-right:10px;margin-left:3px;" >&#x25CB;</span>run_timer_softirq</td><td id="_tr_3_9-2"  data-_i="12" data-_j="2"  class=" _centered"  style="width:14%;word-break:break-all;" >SYSTEM CALL</td><td id="_tr_3_9-3"  data-_i="12" data-_j="3"  class=" _centered"  style="width:8%;" >0.24</td><td id="_tr_3_9-4"  data-_i="12" data-_j="4"  class=" _centered"  style="width:8%;" >0.02</td><td id="_tr_3_9-5"  data-_i="12" data-_j="5"  class=" _centered"  style="width:8%;" >1</td><td id="_tr_3_9-6"  data-_i="12" data-_j="6"  class=" _centered"  style="width:8%;" >0.00</td></tr>
+</table></div>
+<script>
+document.getElementById("_tr_3_3_1").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("_tr_3_3_1_2").addEventListener('contextmenu', event => event.preventDefault());
+function _action_15 (obj, i, j, p){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\"b_charts/empty_lb.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_4 (obj, i, j, p){
+           open("loops/empty_loop.html?loop="+p+"");
+}
+function _action_5 (obj, i, j, p){
+           open("functions/empty_function.html?fct="+p+"");
+}
+function _action_6 (obj, i, j, p){
+           open(""+p+"");
+}
+</script>
+<style>
+#mctxMenu0 {
+  display:none;
+  z-index:100;
+}
+#mctxMenu1 {
+  display:none;
+  z-index:100;
+}
+</style>
+<mrmenu id="mctxMenu0">
+  <mrmenu id="mctxMenu0_1" title = "Load Distribution" onclick="_action_7('_p', '_p0_1')" oncontextmenu="_action_7('_p', '_p0_1')" ></mrmenu>
+  <mrmenu id="mctxMenu0_2" title = "Sorted Load Distribution" onclick="_action_9('_p', '_p0_2')" oncontextmenu="_action_9('_p', '_p0_2')" ></mrmenu>
+  <mrmenu id="mctxMenu0_3" title = "Load Distribution All Threads" onclick="_action_8('_p', '_p0_3')" oncontextmenu="_action_8('_p', '_p0_3')" ></mrmenu>
+</mrmenu>
+<mrmenu id="mctxMenu1">
+  <mrmenu id="mctxMenu1_1" title = "Load Distribution" onclick="_action_11('_p', '_p1_1')" oncontextmenu="_action_11('_p', '_p1_1')" ></mrmenu>
+  <mrmenu id="mctxMenu1_2" title = "Sorted Load Distribution" onclick="_action_13('_p', '_p1_2')" oncontextmenu="_action_13('_p', '_p1_2')" ></mrmenu>
+  <mrmenu id="mctxMenu1_3" title = "Load Distribution All Threads" onclick="_action_12('_p', '_p1_3')" oncontextmenu="_action_12('_p', '_p1_3')" ></mrmenu>
+</mrmenu>
+<script>
+var _global_elem;
+var _ids;
+
+document.getElementById("mctxMenu0").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu0_1").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu0_2").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu0_3").addEventListener('contextmenu', event => event.preventDefault());
+
+_ids = ["_tr_3_1", "_tr_3_2", "_tr_3_3", "_tr_3_4", "_tr_3_5", "_tr_3_6", "_tr_3_7", "_tr_3_8", "_tr_3_9"];
+for (var i = 0; i < _ids.length; i++) {
+  var elem = document.getElementById(_ids[i]);
+  elem.addEventListener("contextmenu",function(event){
+    event.preventDefault();
+    var ctxMenu = document.getElementById("mctxMenu0");
+    ctxMenu.style.display = "block";
+    ctxMenu.style.left = (event.pageX - 10)+"px";
+    ctxMenu.style.top = (event.pageY - 10)+"px";
+    _global_elem = event.target || event.srcElement;
+    ctxMenu = document.getElementById("mctxMenu1");
+    ctxMenu.style.display = "";
+    ctxMenu.style.left = "";
+    ctxMenu.style.top = "";
+  },false);
+  document.addEventListener("click",function(event){
+    var ctxMenu = document.getElementById("mctxMenu0");
+    ctxMenu.style.display = "";
+    ctxMenu.style.left = "";
+    ctxMenu.style.top = "";
+  },false);
+}
+
+function _action_7 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\"b_charts/"+_global_elem.dataset._i+".html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_9 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\"b_charts/"+_global_elem.dataset._i+"_sorted.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_8 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\"b_charts/"+_global_elem.dataset._i+"_all.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+document.getElementById("mctxMenu1").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu1_1").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu1_2").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu1_3").addEventListener('contextmenu', event => event.preventDefault());
+
+_ids = ["_tr_3_3_1_1"];
+for (var i = 0; i < _ids.length; i++) {
+  var elem = document.getElementById(_ids[i]);
+  elem.addEventListener("contextmenu",function(event){
+    event.preventDefault();
+    var ctxMenu = document.getElementById("mctxMenu1");
+    ctxMenu.style.display = "block";
+    ctxMenu.style.left = (event.pageX - 10)+"px";
+    ctxMenu.style.top = (event.pageY - 10)+"px";
+    _global_elem = event.target || event.srcElement;
+    ctxMenu = document.getElementById("mctxMenu0");
+    ctxMenu.style.display = "";
+    ctxMenu.style.left = "";
+    ctxMenu.style.top = "";
+  },false);
+  document.addEventListener("click",function(event){
+    var ctxMenu = document.getElementById("mctxMenu1");
+    ctxMenu.style.display = "";
+    ctxMenu.style.left = "";
+    ctxMenu.style.top = "";
+  },false);
+}
+
+function _action_11 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\""+_global_elem.dataset._p+".html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_13 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\""+_global_elem.dataset._p+"_sorted.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_12 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\""+_global_elem.dataset._p+"_all.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+</script>
+</div></div><script class="code">
+// Function called to check / uncheck all modules in the filter
+function _onchange_modules (obj) {
+  var inputs = ["_input_check_mod_libm-2.27.so", "_input_check_mod_a.out", "_input_check_mod_SYSTEM_CALL", ];
+  if (obj.checked == true) {
+    document.getElementById("_input_check_all_mods_text").innerHTML = "Uncheck all modules";
+    for (var i = 0; i < inputs.length; i++) {
+      document.getElementById(inputs[i]).checked = true;
+    }
+  }
+  else {
+    document.getElementById("_input_check_all_mods_text").innerHTML = "Check all modules";
+    for (var i = 0; i < inputs.length; i++) {
+      document.getElementById(inputs[i]).checked = false;
+    }
+  }
+}
+// Function called to handle filters
+function _upd_table() {
+  var covs = [80.52, 8.55, 3.33, 3.33, 3.33, 0, 2.38, 1.66, 1.66, 1.43, 0.24, 0.24];
+  var tab = document.getElementById("_treed_table_3");
+  var nb_rows = tab.childNodes[0].rows.length;
+  var rows = tab.childNodes[0].rows;
+  var cov = 0
+  for (var i = 1; i < nb_rows; i++) {
+    var cells = rows[i].cells;
+    if (cells[1].innerHTML != ""
+    &&  document.getElementById("_input_check_mod_" + cells[1].innerHTML.replace (/ /g, "_")).checked == true) {
+      cov += covs[i - 1];
+    }
+  }
+  if (cov > 100) {
+     cov = 100;
+  }
+  for (var i = 1; i < nb_rows; i++) {
+    var cells = rows[i].cells;
+    cells[2].textContent = Math.floor((covs[i - 1] * 100 * 100) / cov) / 100 ;
+    if (cells[1].innerHTML != "") {
+      if (document.getElementById("_input_check_mod_" + cells[1].innerHTML.replace (/ /g, "_")).checked == true) {
+        if (rows[i].classList.contains("_treed_hidden")) {
+          rows[i].classList.toggle("_treed_hidden");
+        }
+      }
+      else {
+        if (! rows[i].classList.contains("_treed_hidden")) {
+          rows[i].classList.toggle("_treed_hidden");
+          if (rows[i].firstChild.firstChild.textContent == "\u25BC") {
+            rows[i].firstChild.firstChild.textContent = "\u25BA";
+          }
+        }
+        var j = i + 1;
+        while (j < nb_rows && rows[j].cells[1].innerHTML == "") {
+          if (! rows[j].classList.contains("_treed_hidden")) {
+            rows[j].classList.toggle("_treed_hidden");
+            if (rows[j].firstChild.firstChild.textContent == "\u25BC") {
+              rows[j].firstChild.firstChild.textContent = "\u25BA";
+            }
+          }
+          j++;
+        }
+      }
+    }
+  }
+}
+addLoadEvent(function(){
+  var boxs_on  = ["_input_check_mod_libm-2.27.so", "_input_check_mod_a.out", "_input_check_mod_SYSTEM_CALL", ];
+
+  for (var i = 0; i < boxs_on.length; i++) {
+    document.getElementById(boxs_on[i]).checked = true;
+  }
+});
+function _onresize () {
+  document.getElementById("spacer_page_title").style.height = (document.getElementById("page_title").scrollHeight + 20)+"px";
+}
+window.onresize = _onresize;
+</script>
+
+  <div id="MaqaoModal" class="maqao_modal">
+    <div class="maqao_modal-content">
+      <div class="maqao_modal-header">
+        <span class="maqao_close">&times;</span>
+      </div>
+      <div id="maqao_modal-body" class="maqao_modal-body">
+      </div>
+    </div>
+  </div>
+</div><script>
+var modal = document.getElementById('MaqaoModal');
+var span = document.getElementsByClassName("maqao_close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v2 - v1 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+addLoadEvent(function(){
+  document.querySelectorAll('._fixed_table th').forEach(th => th.addEventListener('click', (() => {
+    const table = th.closest('table');
+    // Remove all symbols in header
+    table.querySelectorAll('th').forEach(function (e) {
+      e.firstChild.textContent = "";
+    });
+    // Change the symbol on the clicked header
+    if (this.asc != true) {
+      th.firstChild.textContent = "\u25BC";
+    }
+    else {
+      th.firstChild.textContent = "\u25B2";
+    }
+    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        .forEach(tr => table.appendChild(tr) );
+  })));
+});
+// Fonction for table selector
+function click_table_menu (c) {
+  $("."+c).each(function(index, element) {
+    element.classList.toggle("_tcol_hidden");
+  });
+}
+function set_all_table_menu (obj, opt_ids) {
+  for (i = 0; i < opt_ids.length; i++) {
+    var obj_s = document.getElementById(opt_ids[i]);
+    if (obj.checked == obj_s.checked) {
+      click_table_menu (opt_ids[i]);
+    }
+    if (obj.checked == true) {
+      obj_s.checked = false;
+    } else {
+      obj_s.checked = true;
+    }
+  }
+  if (obj.checked == true) {
+    document.getElementById(obj.id+"_text").innerHTML = "Select all";
+  } else {
+    document.getElementById(obj.id+"_text").innerHTML = "Select none";
+  }
+}
+// Script for accordion box
+function _click_accordion_header(obj) {
+  var content_id = '_accordion_content_' + obj.id.substr (obj.id.lastIndexOf('_') + 1);
+  var content = document.getElementById(content_id);
+  content.classList.toggle('collapsed');
+  obj.classList.toggle('collapsed');
+  obj.parentNode.classList.toggle('collapsed');
+  // Check if the box must be openned ...
+  if (obj.classList.contains ('collapsed'))
+  {
+    obj.firstChild.textContent = "\u25B6";
+  }
+  // or closed.
+  else 
+  {
+    obj.firstChild.textContent = "\u25BC";
+  }
+}
+  // Script for paged table
+function _click_paged_prev(obj) {
+  var pages_content_id = '_paged_tables_page_' + obj.parentNode.parentNode.id.substr (obj.parentNode.parentNode.id.lastIndexOf('_') + 1);
+  var pages_content = document.getElementById(pages_content_id).innerHTML;
+  var max_pages = pages_content.substr (pages_content.lastIndexOf('/') + 1);
+  var cur_page  = pages_content.substring (pages_content.lastIndexOf(' ') + 1, pages_content.lastIndexOf('/'));
+  max_pages = Number (max_pages);
+  cur_page  = Number (cur_page);
+  if (cur_page > 1) {
+    var div_paged = obj.parentNode.parentNode.id;
+    var i;
+    var x = document.getElementsByClassName(div_paged + '_' + (cur_page - 1));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    x = document.getElementsByClassName(div_paged + '_' + (cur_page - 2));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+  document.getElementById(pages_content_id).textContent = "Page " + (cur_page - 1) + "/" + max_pages;
+  }
+}
+function _click_paged_next(obj) {
+  var pages_content_id = '_paged_tables_page_' + obj.parentNode.parentNode.id.substr (obj.parentNode.parentNode.id.lastIndexOf('_') + 1);
+  var pages_content = document.getElementById(pages_content_id).innerHTML;
+  var max_pages = pages_content.substr (pages_content.lastIndexOf('/') + 1);
+  var cur_page  = pages_content.substring (pages_content.lastIndexOf(' ') + 1, pages_content.lastIndexOf('/'));
+  max_pages = Number (max_pages);
+  cur_page  = Number (cur_page);
+  if (cur_page < max_pages) {
+    var div_paged = obj.parentNode.parentNode.id;
+    var i;
+    var x = document.getElementsByClassName(div_paged + '_' + (cur_page - 1));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    x = document.getElementsByClassName(div_paged + '_' + cur_page);
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    document.getElementById(pages_content_id).textContent = "Page " + (cur_page + 1) + "/" + max_pages;
+  }
+}
+// Function for tree table
+function _click_treed(obj) {
+  if (obj.innerHTML == "\u25BA") {
+    obj.textContent = "\u25BC";
+    // Open childs
+    var x = document.getElementsByClassName(obj.parentNode.parentNode.id);
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_treed_hidden');
+    }
+  }
+  else {
+    obj.textContent = "\u25BA";
+    // Close all childs
+    var trs = document.getElementsByTagName('tr');
+    var r   = obj.parentNode.parentNode.id+'_';
+    var re  = new RegExp (r, "g");
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+""
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (! o.classList.contains('_treed_hidden')) {
+          o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BC") {
+          o.firstChild.firstChild.textContent = "\u25BA";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '+';
+        }
+      }
+    }
+    if (obj.parentNode.childNodes.length == 3) {
+      obj.parentNode.childNodes[2].textContent = '+';
+    }
+  }
+}
+function _click_expand (obj) {
+  var trs = document.getElementsByTagName('tr');
+  var r   = obj.parentNode.parentNode.id+'_';
+  var re  = new RegExp (r, "g");
+  // Symbole + => expand all
+  if (obj.textContent == "+") {
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+"";
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (o.classList.contains('_treed_hidden')) {
+           o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BA") {
+          o.firstChild.firstChild.textContent = "\u25BC";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '\u2010';
+        }
+      }
+    }
+    var o = obj.parentNode.parentNode;
+    if (o.firstChild.firstChild.textContent == "\u25BA") {
+      o.firstChild.firstChild.textContent = "\u25BC";
+    }
+    obj.textContent = "\u2010";
+  }
+  // Symbole - => collapse all
+  else {
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+"";
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (! o.classList.contains('_treed_hidden')) {
+           o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BC") {
+          o.firstChild.firstChild.textContent = "\u25BA";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '+';
+        }
+      }
+    }
+    var o = obj.parentNode.parentNode;
+    if (o.firstChild.firstChild.textContent == "\u25BC") {
+      o.firstChild.firstChild.textContent = "\u25BA";
+    }
+    obj.textContent = "+";
+  }
+}
+// Hide unselected tabs
+addLoadEvent(function(){
+  var x = document.getElementsByClassName("_tab_header_li");
+  for (var i = 0; i < x.length; i++) {
+    if (x[i].classList.contains("selected_tab") == false) {
+      var e = document.getElementById (x[i].dataset.tab);
+      e.style.display = "none";
+    }
+  }
+});
+// Change tab
+function change_tab (e, baseId) {
+  // Handle tabs
+  var i = 1;
+  while (true) {
+    var id = baseId + i;
+    var t = document.getElementById (id);
+    if (t == null) {
+      break;
+    }
+    if (id == e.dataset.tab) {
+      t.style.removeProperty("display");
+    }
+    else {
+      t.style.display = "none";
+    }
+    i = i + 1;
+  }
+  // Handle headers
+  $(e).siblings().each( function () {
+    this.classList.remove("selected_tab");
+  });
+  e.classList.add("selected_tab");
+}
+</script>
+</body>
+</html>

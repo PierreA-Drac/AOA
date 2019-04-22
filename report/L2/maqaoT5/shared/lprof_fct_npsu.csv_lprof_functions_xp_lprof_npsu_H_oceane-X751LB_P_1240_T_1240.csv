@@ -1,0 +1,8 @@
+Function Name;Module;Source Info;Time %;Time(s);CPI ratio;
+__ieee754_exp_fma;libm-2.27.so;;79.90;6.68;0.29;
+exp;libm-2.27.so;;9.33;0.78;1.49;
+__truncf_c;libm-2.27.so;;3.35;0.28;22.40;
+baseline;binary;kernel5.c:6;3.11;0.26;3.18;
+lgamma;libm-2.27.so;;2.63;0.22;2.00;
+@plt;libm-2.27.so;;0.96;0.08;8.00;
+@plt_start@;binary;;0.72;0.06;0.45;

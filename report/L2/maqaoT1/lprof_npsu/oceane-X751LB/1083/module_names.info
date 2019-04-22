@@ -1,0 +1,6 @@
+/home/oceane/Documents/AOA/AOA/maqao/binary
+/lib/x86_64-linux-gnu/ld-2.27.so
+[vdso]
+[vsyscall]
+/lib/x86_64-linux-gnu/libm-2.27.so
+/lib/x86_64-linux-gnu/libc-2.27.so

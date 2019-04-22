@@ -1,0 +1,51 @@
+0x1614::Insn: MOVSS	(%RBX),%XMM0
+0x1618::Insn: ADD	$0x20,%RBX
+0x161c::Insn: CALL	750 <@plt_start@+0x20>
+0x1621::Insn: PXOR	%XMM6,%XMM6
+0x1625::Insn: CVTSS2SD	%XMM0,%XMM6
+0x1629::Insn: MOVSS	-0x1c(%RBX),%XMM0
+0x162e::Insn: MULSD	(%R13),%XMM6
+0x1634::Insn: MOVSD	%XMM6,(%R13)
+0x163a::Insn: CALL	750 <@plt_start@+0x20>
+0x163f::Insn: PXOR	%XMM7,%XMM7
+0x1643::Insn: CVTSS2SD	%XMM0,%XMM7
+0x1647::Insn: MOVSS	-0x18(%RBX),%XMM0
+0x164c::Insn: MULSD	(%R13),%XMM7
+0x1652::Insn: MOVSD	%XMM7,(%R13)
+0x1658::Insn: CALL	750 <@plt_start@+0x20>
+0x165d::Insn: PXOR	%XMM8,%XMM8
+0x1662::Insn: CVTSS2SD	%XMM0,%XMM8
+0x1667::Insn: MOVSS	-0x14(%RBX),%XMM0
+0x166c::Insn: MULSD	(%R13),%XMM8
+0x1672::Insn: MOVSD	%XMM8,(%R13)
+0x1678::Insn: CALL	750 <@plt_start@+0x20>
+0x167d::Insn: PXOR	%XMM9,%XMM9
+0x1682::Insn: CVTSS2SD	%XMM0,%XMM9
+0x1687::Insn: MOVSS	-0x10(%RBX),%XMM0
+0x168c::Insn: MULSD	(%R13),%XMM9
+0x1692::Insn: MOVSD	%XMM9,(%R13)
+0x1698::Insn: CALL	750 <@plt_start@+0x20>
+0x169d::Insn: PXOR	%XMM10,%XMM10
+0x16a2::Insn: CVTSS2SD	%XMM0,%XMM10
+0x16a7::Insn: MOVSS	-0xc(%RBX),%XMM0
+0x16ac::Insn: MULSD	(%R13),%XMM10
+0x16b2::Insn: MOVSD	%XMM10,(%R13)
+0x16b8::Insn: CALL	750 <@plt_start@+0x20>
+0x16bd::Insn: PXOR	%XMM11,%XMM11
+0x16c2::Insn: CVTSS2SD	%XMM0,%XMM11
+0x16c7::Insn: MOVSS	-0x8(%RBX),%XMM0
+0x16cc::Insn: MULSD	(%R13),%XMM11
+0x16d2::Insn: MOVSD	%XMM11,(%R13)
+0x16d8::Insn: CALL	750 <@plt_start@+0x20>
+0x16dd::Insn: PXOR	%XMM12,%XMM12
+0x16e2::Insn: CVTSS2SD	%XMM0,%XMM12
+0x16e7::Insn: MOVSS	-0x4(%RBX),%XMM0
+0x16ec::Insn: MULSD	(%R13),%XMM12
+0x16f2::Insn: MOVSD	%XMM12,(%R13)
+0x16f8::Insn: CALL	750 <@plt_start@+0x20>
+0x16fd::Insn: PXOR	%XMM13,%XMM13
+0x1702::Insn: CMP	%R14,%RBX
+0x1705::Insn: CVTSS2SD	%XMM0,%XMM13
+0x170a::Insn: MULSD	(%R13),%XMM13
+0x1710::Insn: MOVSD	%XMM13,(%R13)
+0x1716::Insn: JNE	1614 <baseline+0x3b4>

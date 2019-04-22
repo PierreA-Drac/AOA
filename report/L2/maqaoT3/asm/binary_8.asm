@@ -1,0 +1,27 @@
+0x1327::Insn: PXOR	%XMM0,%XMM0
+0x132b::Insn: ADD	$0x20,%R15
+0x132f::Insn: CVTSS2SD	(%R14),%XMM0
+0x1334::Insn: ADD	%RBX,%R14
+0x1337::Insn: CALL	740 <@plt_start@+0x20>
+0x133c::Insn: MULSD	-0x20(%R15),%XMM0
+0x1342::Insn: MOVSD	%XMM0,-0x20(%R15)
+0x1348::Insn: PXOR	%XMM0,%XMM0
+0x134c::Insn: CVTSS2SD	(%R14),%XMM0
+0x1351::Insn: ADD	%RBX,%R14
+0x1354::Insn: CALL	740 <@plt_start@+0x20>
+0x1359::Insn: MULSD	-0x18(%R15),%XMM0
+0x135f::Insn: MOVSD	%XMM0,-0x18(%R15)
+0x1365::Insn: PXOR	%XMM0,%XMM0
+0x1369::Insn: CVTSS2SD	(%R14),%XMM0
+0x136e::Insn: ADD	%RBX,%R14
+0x1371::Insn: CALL	740 <@plt_start@+0x20>
+0x1376::Insn: MULSD	-0x10(%R15),%XMM0
+0x137c::Insn: MOVSD	%XMM0,-0x10(%R15)
+0x1382::Insn: PXOR	%XMM0,%XMM0
+0x1386::Insn: CVTSS2SD	(%R14),%XMM0
+0x138b::Insn: ADD	%RBX,%R14
+0x138e::Insn: CALL	740 <@plt_start@+0x20>
+0x1393::Insn: MULSD	-0x8(%R15),%XMM0
+0x1399::Insn: MOVSD	%XMM0,-0x8(%R15)
+0x139f::Insn: CMP	(%RSP),%R15
+0x13a3::Insn: JNE	1327 <baseline+0xd7>

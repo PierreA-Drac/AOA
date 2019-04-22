@@ -170,21 +170,62 @@ void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
     }
 }
 
-#elif defined L2_OPT1
+#elif OPT_LOOP1
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            if (j == 0)
+                b[i] = 1.0;
+            b[i] *= exp(a[i][j]);
+        }
+    }
+}
 
-#elif defined L3_OPT1
+#elif OPT_IF
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (i = 0; i < n; i++){
+		b[i] = exp(a[i][0];
+	}
+     for(i = 0; i < n; i++) {
+        for (j = 1; j < n; j++) {
+            b[i] *= exp(a[i][j]);
+        }
+    }
+}
+
+#elif OPT_EXPF
+
+void baseline(unsigned n, float a[n][n], double b[n])
+{
+    unsigned i, j;
+    for (i = 0; i < n; i++){
+		b[i] = expf(a[i][0]);
+	}
+     for(i = 0; i < n; i++) {
+        for (j = 1; j < n; j++) {
+            b[i] *= expf(a[i][j]);
+        }
+    }
+}
+
 
 #else
 
 /* Original. */
+
 
 void baseline(unsigned n, float a[n][n], double b[n])
 {
     unsigned i, j;
     for (j = 0; j < n; j++) {
         for (i = 0; i < n; i++) {
-            if (j == 0)
+            if (j == 0){
                 b[i] = 1.0;
+            }
             b[i] *= exp(a[i][j]);
         }
     }

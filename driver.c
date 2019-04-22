@@ -34,10 +34,10 @@ int main (int argc, char *argv[]) {
 
     for (m = 0; m < NB_METAS; m++) {
         /* Allocate arrays. */
-        /* float (*a)[size] = malloc (size * size * sizeof *a[0]); */
-        /* double *b        = malloc (size        * sizeof *b); */
-        float (*a)[size] = 0; posix_memalign ((void **) &a, 64, size * size * sizeof *a[0]);
-        double *b        = 0; posix_memalign ((void **) &b, 64, size        * sizeof *b);
+        float (*a)[size] = malloc (size * size * sizeof *a[0]); 
+        double *b        = malloc (size        * sizeof *b); 
+        //~ float (*a)[size] = 0; posix_memalign ((void **) &a, 64, size * size * sizeof *a[0]);
+        //~ double *b        = 0; posix_memalign ((void **) &b, 64, size        * sizeof *b);
         
         /* Init arrays. */
         srand(0);
