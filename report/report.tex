@@ -228,7 +228,7 @@ assignations :
             \item 4096 KiB L3 (partagé)
         \end{itemize}
     \item[Océane] Cache L2 : 
-        \begin{figure}[h]
+        \begin{figure}[!h]
 		\includegraphics[scale=0.42]{figures/L2/L2topo.png}
 		\caption{ }
 		\end{figure}
@@ -475,7 +475,7 @@ likwid-perftcr afin de voir si les données transitaient bien par le cache L2.
 Après avoir compilé avec gcc uniquement j'ai exécuté l'exécutable avec likwid et
 voici les résultats obtenus :
 
-\begin{table}[h]
+\begin{table}[!h]
     \centering
     \begin{tabular}{|c|c|}
         \hline
@@ -503,7 +503,7 @@ Voici ci-contre le graphique obtenu pour trouver le bon nombre de warmup. On
 peut observer que le nombre de cycles semble se stabiliser au alentour de 100
 warmup. Pour plus de sécurité j'ai choisi 150 pour le nombre de warmup.
 
-\begin{figure}[h]
+\begin{figure}[!h]
     \includegraphics[scale=0.8]{figures/L2/L2warmup.png}
     \caption{Sans l'exponentiel}
 \end{figure}
@@ -511,7 +511,7 @@ warmup. Pour plus de sécurité j'ai choisi 150 pour le nombre de warmup.
 J'ai ensuite vérifié avec le calcul de l'exponetiel et on obtient bien le 
 même résultat. 
 
-\begin{figure}[h]
+\begin{figure}[!h]
     \includegraphics[scale=0.8]{figures/L2/L2warmup2.png}
     \caption{Avec l'exponentiel}
 \end{figure}
@@ -520,7 +520,7 @@ Pour trouver le bon nombre de répétitions j'ai uniquement fait les tests avec
 l'exponentiel. Comme vous pouvez le voir, on peut remarquer que l'ensemble est
 stable, les variations sont minimes. J'ai choisit comme nombre de répétitions
 1200.
-\begin{figure}[h]
+\begin{figure}[!h]
     \includegraphics[scale=0.8]{figures/L2/L2repet.png}
     \caption{ }
 \end{figure}
@@ -697,6 +697,10 @@ TODO
 
 TODO Parler de pourquoi on n'as pas fait le changement de type de données (double par float).
 
+\subsubsection{Cache L2}
+
+\subsubsection{RAM}
+
 \section{Conclusion}
 
 Pour conclure, nous aurons tout de même réussis à apporter des optimisations que
@@ -709,18 +713,18 @@ atteindre la rapidité de calcul obtenue par les meilleures options du
 compilateur, à savoir 4,5s. Nous pensons qu'avec la vectorisation de notre
 fonction exponentielle et de notre boucle intérieur du kernel, cela aurait pu
 être possible de faire mieux !
-
 Nous aurons été confrontés à de nombreux petits soucis épars pendant notre
 démarche, classique pour des étudiants découvrant les outils de mesures de
 performances, résultants parfois à des problèmes de cohérences entre les
-mesures. Ces problèmes de cohérences pouvaient avoir des explications diverses :
+mesures. Ces problèmes de cohérences pouvaient avoir des explications diverses :
 utilisation du \acs{CPU} par un autre processus, erreurs dans le code, mauvais
 paramétrage de l'outil de mesure... D'où l'importance de la rigueur de mesure
 apprise en TD, détaillée dans le rapport.
 
 Pour conclure, nous pensons que ce projet nous aura apporté une bonne méthode
 d'analyse et d'optimisation, et nous aura permis de mettre en application réelle
-les techniques et sujets vus en cours. Une très bonne première approche !
+les techniques et sujets vus en cours. Une très bonne première approche !
+
 
 \newpage
 \section*{Acronymes}

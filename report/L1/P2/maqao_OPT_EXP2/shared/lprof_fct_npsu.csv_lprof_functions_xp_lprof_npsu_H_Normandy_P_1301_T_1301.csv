@@ -1,0 +1,8 @@
+Function Name;Module;Source Info;Time %;Time(s);CPI ratio;
+baseline;binary;kernel.c:114;99.94;9.27;0.43;
+apic_timer_interrupt;SYSTEM CALL;;0.02;0.00;0.00;
+task_tick_fair;SYSTEM CALL;;0.01;0.00;0.00;
+pvclock_gtod_notify;SYSTEM CALL;;0.01;0.00;0.00;
+timekeeping_advance;SYSTEM CALL;;0.01;0.00;0.00;
+run_timer_softirq;SYSTEM CALL;;0.01;0.00;0.00;
+read_tsc;SYSTEM CALL;;0.01;0.00;1.00;

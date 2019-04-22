@@ -4,17 +4,17 @@
 CC=gcc
 OBJS=driver.o kernel.o rdtsc.o
 # Flags for baseline, driver, rdtsc.
-CFLAGS+=-O2 -g -Wall
-LFLAGS=-lm
+CFLAGS+=-O2 -g -Wall -fopenmp
+LFLAGS=-lm -lgomp
 # Flags for kernel.
-OPTFLAGS=-O2 -Wall
+OPTFLAGS=-O2 -Wall -fopenmp
 # Selection of code version. Can be equal to "NOOPT || OPT_IF_HOISTING ...".
 OPT=NOOPT
 
 all: baseline
 
 run: baseline
-	./baseline 88 1000 1000000
+	./baseline 88 1000 10000
 
 baseline: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)

@@ -1,0 +1,4 @@
+Loop ID;Module;Function Name;Source Info;Level;Time %;Time (s);CPI ratio;
+6;binary;baseline._omp_fn.0;kernel.c:141-143;Single;2.36;0.85;0.81;
+7;binary;baseline;kernel.c:138-139;Single;0.09;0.03;1.32;
+3;binary;main;driver.c:14-15;Innermost;0.00;0.00;0.00;

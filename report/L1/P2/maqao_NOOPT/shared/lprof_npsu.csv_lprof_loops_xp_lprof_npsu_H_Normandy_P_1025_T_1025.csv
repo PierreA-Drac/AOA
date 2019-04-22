@@ -1,0 +1,4 @@
+Loop ID;Module;Function Name;Source Info;Level;Time %;Time (s);CPI ratio;
+6;binary;baseline;kernel.c:185-188;Innermost;10.74;2.30;0.23;
+7;binary;baseline;kernel.c:182-188;Outermost;0.07;0.01;0.17;
+1;binary;main;driver.c:57-58;Innermost;0.00;0.00;0.50;

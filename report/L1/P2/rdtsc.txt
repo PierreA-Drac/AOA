@@ -1,0 +1,10 @@
+NOOPT,gcc,-O2 -fopenmp,22.96
+OPT_LOOP_STRIDE_1,gcc,-O2 -fopenmp,23.03
+OPT_IF_HOISTING,gcc,-O2 -fopenmp,22.58
+OPT_LOOP_UNROLLING,gcc,-O2 -fopenmp,22.31
+OPT_RESTRICT,gcc,-O2 -fopenmp,22.96
+OPT_EXP1,gcc,-O2 -fopenmp,10.55
+OPT_EXP2,gcc,-O2 -fopenmp,10.02
+OPT_OMP,gcc,-O2 -fopenmp,39.23
+OPT_BEST_L1,gcc,-O2 -fopenmp,8.24
+OPT_BEST_L1,gcc,-Ofast -march=native -funroll-all-loops -fopenmp,7.42

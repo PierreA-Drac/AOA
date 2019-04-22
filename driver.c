@@ -5,7 +5,7 @@
 
 #define NB_METAS 31
 
-extern uint64_t rdtsc ();
+extern uint64_t rdtsc();
 
 extern void baseline(unsigned n, float a[n][n], double b[n]);
 
@@ -36,8 +36,8 @@ int main (int argc, char *argv[]) {
         /* Allocate arrays. */
         /* float (*a)[size] = malloc (size * size * sizeof *a[0]); */
         /* double *b        = malloc (size        * sizeof *b); */
-        float (*a)[size]; posix_memalign ((void **) &a, 64, size * size * sizeof *a[0]);
-        double *b;        posix_memalign ((void **) &b, 64, size        * sizeof *b);
+        float (*a)[size] = 0; posix_memalign ((void **) &a, 64, size * size * sizeof *a[0]);
+        double *b        = 0; posix_memalign ((void **) &b, 64, size        * sizeof *b);
         
         /* Init arrays. */
         srand(0);

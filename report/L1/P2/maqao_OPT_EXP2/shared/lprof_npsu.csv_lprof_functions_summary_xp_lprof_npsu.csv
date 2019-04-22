@@ -1,0 +1,8 @@
+Function Name;Module;Source Info;Time Average (%);Time Min(s) [TID];Time Max(s) [TID];Time Average(s);
+baseline;binary;kernel.c:114;99.97;9.27 [1301];9.27 [1301];9.27;
+timekeeping_advance;SYSTEM CALL;;0.00;0.00 [1301];0.00 [1301];0.00;
+apic_timer_interrupt;SYSTEM CALL;;0.00;0.00 [1301];0.00 [1301];0.00;
+run_timer_softirq;SYSTEM CALL;;0.00;0.00 [1301];0.00 [1301];0.00;
+pvclock_gtod_notify;SYSTEM CALL;;0.00;0.00 [1301];0.00 [1301];0.00;
+task_tick_fair;SYSTEM CALL;;0.00;0.00 [1301];0.00 [1301];0.00;
+read_tsc;SYSTEM CALL;;0.00;0.00 [1301];0.00 [1301];0.00;

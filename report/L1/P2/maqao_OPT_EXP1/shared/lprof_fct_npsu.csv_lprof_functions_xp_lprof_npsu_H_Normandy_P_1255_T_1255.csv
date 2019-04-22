@@ -1,0 +1,16 @@
+Function Name;Module;Source Info;Time %;Time(s);CPI ratio;
+f64xsubf128;libm-2.28.so;;62.84;6.24;0.28;
+baseline;binary;kernel.c:89;29.32;2.91;0.22;
+Unknown functions;binary;;7.70;0.76;0.25;
+apic_timer_interrupt;SYSTEM CALL;;0.02;0.00;0.00;
+cfb_imageblit;SYSTEM CALL;;0.02;0.00;0.25;
+interrupt_entry;SYSTEM CALL;;0.02;0.00;2.00;
+random;libc-2.28.so;;0.02;0.00;0.75;
+main;binary;driver.c:23;0.01;0.00;0.33;
+notifier_call_chain;SYSTEM CALL;;0.01;0.00;0.00;
+native_write_msr_safe;SYSTEM CALL;;0.01;0.00;0.00;
+thermal_interrupt;SYSTEM CALL;;0.01;0.00;0.00;
+vprintk_emit;SYSTEM CALL;;0.01;0.00;0.00;
+bitfill_aligned;SYSTEM CALL;;0.01;0.00;0.00;
+read_tsc;SYSTEM CALL;;0.01;0.00;1.00;
+__wake_up_common_lock;SYSTEM CALL;;0.01;0.00;0.00;

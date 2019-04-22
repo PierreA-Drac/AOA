@@ -1,0 +1,16 @@
+/home/pierre/Bureau/AOA//kernel.c: 151 - 161
+--------------------------------------------------------------------------------
+
+151:   x = 1.0 + (x / 256.0);
+152:   x *= x; x *= x; x *= x; x *= x;
+153:   x *= x; x *= x; x *= x; x *= x;
+154:   return x;
+155: }
+156: 
+157: void baseline(unsigned n, float (* restrict a)[n], double * restrict b)
+158: {
+159:     unsigned i, j;
+160:     for (i = 0; i < n; i++)
+161:         b[i] = exp_opt(a[i][0]);
+162:     int tail = (n%2 == 1);
+163:     for (i = 0; i < n; i++) {
