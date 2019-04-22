@@ -228,10 +228,10 @@ assignations :
             \item 4096 KiB L3 (partagé)
         \end{itemize}
     \item[Océane] Cache L2 : 
-        \begin{itemize}
-            \item Cache L1 : 32K
-            \item Cache L2 : 256K
-            \item Fréquence 2,40GHz
+        \begin{figure}[h]
+		\includegraphics[scale=0.42]{figures/L2/L2topo.png}
+		\caption{ }
+		\end{figure}
         \end{itemize}
     \item[Camille] RAM : 
         \begin{itemize}
@@ -459,6 +459,16 @@ v7.0.1}, \textit{ICC v19.0.2.187}, tournants sur un \textit{Debian v10 Buster
 (testing)} composé du noyau \textit{Linux v4.19.0 x86\_64}.
 
 \subsubsection{Cache L2}
+Avant de pouvoir executer et mesurer quelque chose il faut s'assurer que 
+la machine n'utilise pas son temps de calcul ou d'accès à la mémoire pour 
+autre chose que notre programme. Pour cela il faut passer en mode root qui 
+n'utilise pas d'interphase graphique et n'est pas connecté au réseau. On 
+connecte la machine au secteur pour qu'elle ne se mette pas en mode economie
+d'energie. Il faut ensuite ffixer la fréquence à l'aide de \textit{cpupower 
+frequency-set} et enfin lorsque l'on compile le programme il faut aussi fixer
+le coeur afin d'éviter que le programme s'execute sur plusieurs et qu'il 
+faille transferer des données entre les différents coeurs ce qui ferrait 
+perdre du temps. Pour fixer le coeur on utilise taskset.
 
 Pour vérifier le calcul théorique de la taille des données j'ai utilisé
 likwid-perftcr afin de voir si les données transitaient bien par le cache L2.
